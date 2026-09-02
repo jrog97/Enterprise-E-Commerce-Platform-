@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "dgSpecHash": "jg2ZJuX41/g=",
+  "success": true,
+  "projectFilePath": "/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Infrastructure/ECommerce.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "/Users/jerry/.nuget/packages/microsoft.entityframeworkcore/10.0.11/microsoft.entityframeworkcore.10.0.11.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/microsoft.entityframeworkcore.abstractions/10.0.11/microsoft.entityframeworkcore.abstractions.10.0.11.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/microsoft.entityframeworkcore.analyzers/10.0.11/microsoft.entityframeworkcore.analyzers.10.0.11.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/microsoft.entityframeworkcore.relational/10.0.4/microsoft.entityframeworkcore.relational.10.0.4.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/microsoft.extensions.caching.abstractions/10.0.11/microsoft.extensions.caching.abstractions.10.0.11.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/microsoft.extensions.caching.memory/10.0.11/microsoft.extensions.caching.memory.10.0.11.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/microsoft.extensions.configuration.abstractions/10.0.4/microsoft.extensions.configuration.abstractions.10.0.4.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/microsoft.extensions.dependencyinjection/10.0.11/microsoft.extensions.dependencyinjection.10.0.11.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.11/microsoft.extensions.dependencyinjection.abstractions.10.0.11.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/microsoft.extensions.logging/10.0.11/microsoft.extensions.logging.10.0.11.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/microsoft.extensions.logging.abstractions/10.0.11/microsoft.extensions.logging.abstractions.10.0.11.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/microsoft.extensions.options/10.0.11/microsoft.extensions.options.10.0.11.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/microsoft.extensions.primitives/10.0.11/microsoft.extensions.primitives.10.0.11.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/npgsql/10.0.3/npgsql.10.0.3.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/npgsql.entityframeworkcore.postgresql/10.0.3/npgsql.entityframeworkcore.postgresql.10.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
