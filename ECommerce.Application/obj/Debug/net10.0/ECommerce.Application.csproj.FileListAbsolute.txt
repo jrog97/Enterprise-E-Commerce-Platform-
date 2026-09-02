@@ -1,0 +1,16 @@
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/bin/Debug/net10.0/ECommerce.Application.deps.json
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/bin/Debug/net10.0/ECommerce.Application.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/bin/Debug/net10.0/ECommerce.Application.pdb
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/bin/Debug/net10.0/ECommerce.Domain.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/bin/Debug/net10.0/ECommerce.Domain.pdb
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/obj/Debug/net10.0/ECommerce.Application.csproj.AssemblyReference.cache
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/obj/Debug/net10.0/ECommerce.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/obj/Debug/net10.0/ECommerce.Application.AssemblyInfoInputs.cache
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/obj/Debug/net10.0/ECommerce.Application.AssemblyInfo.cs
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/obj/Debug/net10.0/ECommerce.Application.csproj.CoreCompileInputs.cache
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/obj/Debug/net10.0/ECommerce.Application.sourcelink.json
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/obj/Debug/net10.0/ECommerc.670E0CBE.Up2Date
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/obj/Debug/net10.0/ECommerce.Application.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/obj/Debug/net10.0/refint/ECommerce.Application.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/obj/Debug/net10.0/ECommerce.Application.pdb
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/obj/Debug/net10.0/ref/ECommerce.Application.dll

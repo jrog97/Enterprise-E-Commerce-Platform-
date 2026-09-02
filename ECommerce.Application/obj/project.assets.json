@@ -1,11 +1,30 @@
 {
   "version": 4,
   "targets": {
-    "net10.0": {}
+    "net10.0": {
+      "ECommerce.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/ECommerce.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ECommerce.Domain.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "ECommerce.Domain/1.0.0": {
+      "type": "project",
+      "path": "../ECommerce.Domain/ECommerce.Domain.csproj",
+      "msbuildProject": "../ECommerce.Domain/ECommerce.Domain.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net10.0": []
+    "net10.0": [
+      "ECommerce.Domain >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "/Users/jerry/.nuget/packages/": {}
@@ -32,7 +51,11 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Domain/ECommerce.Domain.csproj": {
+              "projectPath": "/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Domain/ECommerce.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

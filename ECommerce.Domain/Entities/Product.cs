@@ -75,7 +75,7 @@ public class Product
         {
             return false;
         }
-
+    
         StockQuantity -= quantity;
         UpdatedAt = DateTime.UtcNow;
 

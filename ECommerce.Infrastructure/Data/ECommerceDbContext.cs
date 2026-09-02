@@ -1,5 +1,6 @@
 using ECommerce.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+
 namespace ECommerce.Infrastructure.Data;
 
 public class ECommerceDbContext : DbContext
@@ -18,4 +19,4 @@ public class ECommerceDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(ECommerceDbContext).Assembly);
     }
-}ic DbSet<Product> Products => Set<Product>();
+}
