@@ -1,7 +1,6 @@
-using ECommerce.Domain.Entities;
-using ECommerce.Infrastructure.Data;
+using ECommerce.Application.DTOs.Products;
+using ECommerce.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Api.Controllers;
 
@@ -9,31 +8,33 @@ namespace ECommerce.Api.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-    private readonly ECommerceDbContext _dbContext;
+    private readonly IProductService _productService;
 
     public ProductsController(
-        ECommerceDbContext dbContext)
+        IProductService productService)
     {
-        _dbContext = dbContext;
+        _productService = productService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+    public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetProducts(
+        CancellationToken cancellationToken)
     {
-        var products = await _dbContext.Products
-            .AsNoTracking()
-            .ToListAsync();
+        var products = await _productService
+            .GetProductsAsync(cancellationToken);
 
         return Ok(products);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<Product>> GetProduct(
-        Guid id)
+    public async Task<ActionResult<ProductDto>> GetProduct(
+        Guid id,
+        CancellationToken cancellationToken)
     {
-        var product = await _dbContext.Products
-            .AsNoTracking()
-            .FirstOrDefaultAsync(product => product.Id == id);
+        var product = await _productService
+            .GetProductByIdAsync(
+                id,
+                cancellationToken);
 
         if (product is null)
         {
@@ -44,16 +45,35 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Product>> CreateProduct(
-        Product product)
+    public async Task<ActionResult<ProductDto>> CreateProduct(
+        CreateProductRequest request,
+        CancellationToken cancellationToken)
     {
-        _dbContext.Products.Add(product);
+        try
+        {
+            var product = await _productService
+                .CreateProductAsync(
+                    request,
+                    cancellationToken);
 
-        await _dbContext.SaveChangesAsync();
-
-        return CreatedAtAction(
-            nameof(GetProduct),
-            new { id = product.Id },
-            product);
+            return CreatedAtAction(
+                nameof(GetProduct),
+                new { id = product.Id },
+                product);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new
+            {
+                message = ex.Message
+            });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
     }
 }

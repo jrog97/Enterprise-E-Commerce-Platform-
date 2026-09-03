@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "+JGy+BAJ/5k=",
+  "dgSpecHash": "PHZdcb9CHDI=",
   "success": true,
   "projectFilePath": "/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Application/ECommerce.Application.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/jerry/.nuget/packages/fluentvalidation/12.1.1/fluentvalidation.12.1.1.nupkg.sha512"
+  ],
   "logs": []
 }
