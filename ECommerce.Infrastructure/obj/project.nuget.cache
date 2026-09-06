@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "jg2ZJuX41/g=",
+  "dgSpecHash": "2YV+seNyBws=",
   "success": true,
   "projectFilePath": "/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Infrastructure/ECommerce.Infrastructure.csproj",
   "expectedPackageFiles": [
+    "/Users/jerry/.nuget/packages/fluentvalidation/12.1.1/fluentvalidation.12.1.1.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/fluentvalidation.dependencyinjectionextensions/12.1.1/fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",
     "/Users/jerry/.nuget/packages/microsoft.entityframeworkcore/10.0.11/microsoft.entityframeworkcore.10.0.11.nupkg.sha512",
     "/Users/jerry/.nuget/packages/microsoft.entityframeworkcore.abstractions/10.0.11/microsoft.entityframeworkcore.abstractions.10.0.11.nupkg.sha512",
     "/Users/jerry/.nuget/packages/microsoft.entityframeworkcore.analyzers/10.0.11/microsoft.entityframeworkcore.analyzers.10.0.11.nupkg.sha512",

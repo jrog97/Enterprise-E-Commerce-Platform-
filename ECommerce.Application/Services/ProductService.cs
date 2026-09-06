@@ -38,47 +38,42 @@ public class ProductService : IProductService
     }
 
     public async Task<ProductDto> CreateProductAsync(
-        CreateProductRequest request,
-        CancellationToken cancellationToken = default)
+    CreateProductRequest request,
+    CancellationToken cancellationToken = default)
+{
+    if (request.Price <= 0)
     {
-        var sku = request.SKU.Trim();
-
-        if (await _productRepository.ExistsBySkuAsync(
-                sku,
-                cancellationToken))
-        {
-            throw new InvalidOperationException(
-                $"A product with SKU '{sku}' already exists.");
-        }
-
-        if (request.Price <= 0)
-        {
-            throw new ArgumentException(
-                "Product price must be greater than zero.");
-        }
-
-        if (request.StockQuantity < 0)
-        {
-            throw new ArgumentException(
-                "Stock quantity cannot be negative.");
-        }
-
-        var product = new Product(
-            request.Name.Trim(),
-            request.Description.Trim(),
-            sku,
-            request.Price,
-            request.StockQuantity);
-
-        await _productRepository.AddAsync(
-            product,
-            cancellationToken);
-
-        await _productRepository.SaveChangesAsync(
-            cancellationToken);
-
-        return MapToDto(product);
+        throw new ArgumentException(
+            "Price must be greater than zero.",
+            nameof(request.Price));
     }
+
+    var sku = request.SKU.Trim();
+
+    if (await _productRepository.ExistsBySkuAsync(
+            sku,
+            cancellationToken))
+    {
+        throw new InvalidOperationException(
+            $"A product with SKU '{sku}' already exists.");
+    }
+
+    var product = new Product(
+        request.Name.Trim(),
+        request.Description.Trim(),
+        sku,
+        request.Price,
+        request.StockQuantity);
+
+    await _productRepository.AddAsync(
+        product,
+        cancellationToken);
+
+    await _productRepository.SaveChangesAsync(
+        cancellationToken);
+
+    return MapToDto(product);
+}
 
     private static ProductDto MapToDto(Product product)
     {

@@ -44,36 +44,19 @@ public class ProductsController : ControllerBase
         return Ok(product);
     }
 
-    [HttpPost]
-    public async Task<ActionResult<ProductDto>> CreateProduct(
-        CreateProductRequest request,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var product = await _productService
-                .CreateProductAsync(
-                    request,
-                    cancellationToken);
+[HttpPost]
+public async Task<ActionResult<ProductDto>> CreateProduct(
+    CreateProductRequest request,
+    CancellationToken cancellationToken)
+{
+    var product = await _productService
+        .CreateProductAsync(
+            request,
+            cancellationToken);
 
-            return CreatedAtAction(
-                nameof(GetProduct),
-                new { id = product.Id },
-                product);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return Conflict(new
-            {
-                message = ex.Message
-            });
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new
-            {
-                message = ex.Message
-            });
-        }
-    }
+    return CreatedAtAction(
+        nameof(GetProduct),
+        new { id = product.Id },
+        product);
+}
 }

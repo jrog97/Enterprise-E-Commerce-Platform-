@@ -94,3 +94,17 @@
 /Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/obj/Debug/net10.0/ECommerce.UnitTests.pdb
 /Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/obj/Debug/net10.0/ECommerce.UnitTests.genruntimeconfig.cache
 /Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/obj/Debug/net10.0/ref/ECommerce.UnitTests.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/.msCoverageSourceRootsMapping_ECommerce.UnitTests
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/CoverletSourceRootsMapping_ECommerce.UnitTests
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/Castle.Core.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/FluentValidation.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/Moq.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/System.Diagnostics.EventLog.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/runtimes/win/lib/net6.0/System.Diagnostics.EventLog.Messages.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/runtimes/win/lib/net6.0/System.Diagnostics.EventLog.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/ECommerce.Application.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/ECommerce.Domain.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/ECommerce.Application.pdb
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/ECommerce.Domain.pdb
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/FluentValidation.DependencyInjectionExtensions.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
