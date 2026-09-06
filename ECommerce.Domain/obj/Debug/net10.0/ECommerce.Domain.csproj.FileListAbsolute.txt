@@ -10,3 +10,4 @@
 /Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Domain/obj/Debug/net10.0/refint/ECommerce.Domain.dll
 /Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Domain/obj/Debug/net10.0/ECommerce.Domain.pdb
 /Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Domain/obj/Debug/net10.0/ref/ECommerce.Domain.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Domain/obj/Debug/net10.0/ECommerce.Domain.csproj.AssemblyReference.cache

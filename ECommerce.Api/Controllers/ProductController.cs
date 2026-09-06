@@ -1,6 +1,7 @@
 using ECommerce.Application.DTOs.Products;
 using ECommerce.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ECommerce.Api.Controllers;
 
@@ -43,7 +44,7 @@ public class ProductsController : ControllerBase
 
         return Ok(product);
     }
-
+[Authorize(Roles = "Admin")]
 [HttpPost]
 public async Task<ActionResult<ProductDto>> CreateProduct(
     CreateProductRequest request,
