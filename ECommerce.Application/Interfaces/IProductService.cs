@@ -1,4 +1,5 @@
 using ECommerce.Application.DTOs.Products;
+
 namespace ECommerce.Application.Interfaces;
 
 public interface IProductService

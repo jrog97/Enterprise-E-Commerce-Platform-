@@ -20,6 +20,14 @@ builder.Services.AddControllers();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
+builder.Services.AddScoped<
+    ICategoryRepository,
+    CategoryRepository>();
+
+builder.Services.AddScoped<
+    ICategoryService,
+    CategoryService>();
+
 builder.Services.AddDbContext<ECommerceDbContext>(options =>
 {
     options.UseNpgsql(
@@ -115,6 +123,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 
 app.UseHttpsRedirection();

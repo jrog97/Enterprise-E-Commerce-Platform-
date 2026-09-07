@@ -18,6 +18,7 @@ public class ProductRepository : IProductRepository
     {
         return await _dbContext.Products
             .AsNoTracking()
+            .Include(product => product.Category)
             .ToListAsync(cancellationToken);
     }
 
@@ -27,6 +28,7 @@ public class ProductRepository : IProductRepository
     {
         return await _dbContext.Products
             .AsNoTracking()
+            .Include(product => product.Category)
             .FirstOrDefaultAsync(
                 product => product.Id == id,
                 cancellationToken);
@@ -57,4 +59,14 @@ public class ProductRepository : IProductRepository
         await _dbContext.SaveChangesAsync(
             cancellationToken);
     }
+    public async Task<bool> CategoryExistsAsync(
+    Guid categoryId,
+    CancellationToken cancellationToken = default)
+{
+    return await _dbContext.Categories
+        .AnyAsync(
+            category => category.Id == categoryId,
+            cancellationToken);
+}
+
 }

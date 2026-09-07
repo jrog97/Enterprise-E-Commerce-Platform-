@@ -19,4 +19,9 @@ public class ProductDto
     public DateTime CreatedAt { get; init; }
 
     public DateTime UpdatedAt { get; init; }
+
+    public Guid CategoryId { get; init; }
+
+    public string CategoryName { get; init; } = string.Empty;
+
 }

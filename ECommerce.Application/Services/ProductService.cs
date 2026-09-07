@@ -58,12 +58,21 @@ public class ProductService : IProductService
             $"A product with SKU '{sku}' already exists.");
     }
 
+    if (!await _productRepository.CategoryExistsAsync(
+        request.CategoryId,
+        cancellationToken))
+{
+    throw new ArgumentException(
+        "The specified category does not exist.");
+}
+
     var product = new Product(
-        request.Name.Trim(),
-        request.Description.Trim(),
-        sku,
-        request.Price,
-        request.StockQuantity);
+    request.Name.Trim(),
+    request.Description.Trim(),
+    sku,
+    request.Price,
+    request.StockQuantity,
+    request.CategoryId);
 
     await _productRepository.AddAsync(
         product,
@@ -76,18 +85,20 @@ public class ProductService : IProductService
 }
 
     private static ProductDto MapToDto(Product product)
+{
+    return new ProductDto
     {
-        return new ProductDto
-        {
-            Id = product.Id,
-            Name = product.Name,
-            Description = product.Description,
-            SKU = product.SKU,
-            Price = product.Price,
-            StockQuantity = product.StockQuantity,
-            IsActive = product.IsActive,
-            CreatedAt = product.CreatedAt,
-            UpdatedAt = product.UpdatedAt
-        };
-    }
+        Id = product.Id,
+        Name = product.Name,
+        Description = product.Description,
+        SKU = product.SKU,
+        Price = product.Price,
+        StockQuantity = product.StockQuantity,
+        IsActive = product.IsActive,
+        CategoryId = product.CategoryId,
+       CategoryName = product.Category?.Name ?? string.Empty,
+        CreatedAt = product.CreatedAt,
+        UpdatedAt = product.UpdatedAt
+    };
+}
 }

@@ -2,27 +2,23 @@ using ECommerce.Domain.Entities;
 
 namespace ECommerce.Application.Interfaces;
 
-public interface IProductRepository
+public interface ICategoryRepository
 {
-    Task<List<Product>> GetAllAsync(
+    Task<List<Category>> GetAllAsync(
         CancellationToken cancellationToken = default);
 
-    Task<Product?> GetByIdAsync(
+    Task<Category?> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken = default);
 
-    Task<bool> ExistsBySkuAsync(
-        string sku,
+    Task<bool> ExistsByNameAsync(
+        string name,
         CancellationToken cancellationToken = default);
 
     Task AddAsync(
-        Product product,
+        Category category,
         CancellationToken cancellationToken = default);
 
     Task SaveChangesAsync(
-        CancellationToken cancellationToken = default);
-
-    Task<bool> CategoryExistsAsync(
-        Guid categoryId,
         CancellationToken cancellationToken = default);
 }

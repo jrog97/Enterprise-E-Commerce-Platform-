@@ -11,32 +11,32 @@ public class Product
     public bool IsActive { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
+    public Guid CategoryId { get; private set; }
+    public Category Category { get; private set; } = null!;
 
     private Product()
     {
     }
 
     public Product(
-        string name,
-        string description,
-        string sku,
-        decimal price,
-        int stockQuantity)
-    {
-        Id = Guid.NewGuid();
-
-        Name = name;
-        Description = description;
-        SKU = sku;
-
-        Price = price;
-        StockQuantity = stockQuantity;
-
-        IsActive = true;
-
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
-    }
+    string name,
+    string description,
+    string sku,
+    decimal price,
+    int stockQuantity,
+    Guid categoryId)
+{
+    Id = Guid.NewGuid();
+    Name = name;
+    Description = description;
+    SKU = sku;
+    Price = price;
+    StockQuantity = stockQuantity;
+    CategoryId = categoryId;
+    IsActive = true;
+    CreatedAt = DateTime.UtcNow;
+    UpdatedAt = DateTime.UtcNow;
+}
 
     public void Update(
         string name,
