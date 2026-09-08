@@ -14,4 +14,8 @@ public interface ICartRepository
 
     Task SaveChangesAsync(
         CancellationToken cancellationToken = default);
+
+    Task DeleteAsync(
+        ShoppingCart cart,
+        CancellationToken cancellationToken = default);
 }

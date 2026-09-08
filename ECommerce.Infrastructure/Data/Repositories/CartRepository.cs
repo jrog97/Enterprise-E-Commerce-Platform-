@@ -41,4 +41,16 @@ public class CartRepository : ICartRepository
         await _dbContext.SaveChangesAsync(
             cancellationToken);
     }
+
+    public Task DeleteAsync(
+       ShoppingCart cart,
+        CancellationToken cancellationToken = default)
+    {
+         _dbContext.ShoppingCarts.Remove(cart);
+
+         return Task.CompletedTask;
+    }
+
+
+
 }

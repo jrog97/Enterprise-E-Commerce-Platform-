@@ -10,4 +10,7 @@ public class ApplicationUser : IdentityUser<Guid>
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public ShoppingCart? Cart { get; set; }
+
+    public ICollection<Order> Orders { get; set; }
+    = new List<Order>();
 }
