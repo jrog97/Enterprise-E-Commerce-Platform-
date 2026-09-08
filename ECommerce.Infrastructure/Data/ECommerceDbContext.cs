@@ -15,6 +15,10 @@ public class ECommerceDbContext
 
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Category> Categories => Set<Category>();
+    public DbSet<ShoppingCart> ShoppingCarts =>
+    Set<ShoppingCart>();
+    public DbSet<CartItem> CartItems =>
+    Set<CartItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

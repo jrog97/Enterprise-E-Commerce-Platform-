@@ -28,6 +28,14 @@ builder.Services.AddScoped<
     ICategoryService,
     CategoryService>();
 
+builder.Services.AddScoped<
+    ICartRepository,
+    CartRepository>();
+
+builder.Services.AddScoped<
+    ICartService,
+    CartService>();
+
 builder.Services.AddDbContext<ECommerceDbContext>(options =>
 {
     options.UseNpgsql(
