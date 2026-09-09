@@ -45,5 +45,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .WithMany(category => category.Products)
             .HasForeignKey(product => product.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Property(product => product.Version)
+            .IsRequired()
+            .IsConcurrencyToken();
     }
 }

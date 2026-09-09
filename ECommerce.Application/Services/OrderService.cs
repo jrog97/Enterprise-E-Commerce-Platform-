@@ -8,13 +8,16 @@ public class OrderService : IOrderService
 {
     private readonly IOrderRepository _orderRepository;
     private readonly ICartRepository _cartRepository;
+    private readonly IProductRepository _productRepository;
 
     public OrderService(
         IOrderRepository orderRepository,
-        ICartRepository cartRepository)
+        ICartRepository cartRepository,
+        IProductRepository productRepository)
     {
         _orderRepository = orderRepository;
         _cartRepository = cartRepository;
+        _productRepository = productRepository;
     }
 
     public async Task<OrderDto> CreateOrderAsync(
@@ -25,33 +28,82 @@ public class OrderService : IOrderService
             userId,
             cancellationToken);
 
-        if (cart is null || cart.Items.Count == 0)
+        if (cart == null || !cart.Items.Any())
         {
             throw new InvalidOperationException(
                 "Cannot create an order from an empty cart.");
         }
 
-        var subtotal = cart.Items.Sum(
-            item => item.Product.Price * item.Quantity);
+        decimal subtotal = 0;
 
-        var tax = subtotal * 0.07m;
+        var checkoutItems = new List<(
+            Guid ProductId,
+            string ProductName,
+            string SKU,
+            decimal UnitPrice,
+            int Quantity)>();
+
+        foreach (var cartItem in cart.Items)
+        {
+            var product = await _productRepository.GetByIdForUpdateAsync(
+                cartItem.ProductId,
+                cancellationToken);
+
+            if (product == null)
+            {
+                throw new InvalidOperationException(
+                    $"Product {cartItem.ProductId} no longer exists.");
+            }
+
+            if (!product.IsActive)
+            {
+                throw new InvalidOperationException(
+                    $"Product '{product.Name}' is no longer available.");
+            }
+
+            if (!product.RemoveStock(cartItem.Quantity))
+            {
+                throw new InvalidOperationException(
+                    $"Insufficient stock for product '{product.Name}'.");
+            }
+
+            checkoutItems.Add((
+                product.Id,
+                product.Name,
+                product.SKU,
+                product.Price,
+                cartItem.Quantity));
+
+            subtotal += product.Price * cartItem.Quantity;
+        }
+
+        subtotal = Math.Round(
+            subtotal,
+            2,
+            MidpointRounding.AwayFromZero);
+
+        const decimal taxRate = 0.07m;
+
+        var tax = Math.Round(
+            subtotal * taxRate,
+            2,
+            MidpointRounding.AwayFromZero);
 
         var order = new Order(
             userId,
             subtotal,
             tax);
 
-        foreach (var cartItem in cart.Items)
+        foreach (var item in checkoutItems)
         {
-            var orderItem = new OrderItem(
-                order.Id,
-                cartItem.ProductId,
-                cartItem.Product.Name,
-                cartItem.Product.SKU,
-                cartItem.Product.Price,
-                cartItem.Quantity);
-
-            order.Items.Add(orderItem);
+            order.Items.Add(
+                new OrderItem(
+                    order.Id,
+                    item.ProductId,
+                    item.ProductName,
+                    item.SKU,
+                    item.UnitPrice,
+                    item.Quantity));
         }
 
         order.Confirm();
@@ -60,9 +112,7 @@ public class OrderService : IOrderService
             order,
             cancellationToken);
 
-        await _cartRepository.DeleteAsync(
-            cart,
-            cancellationToken);
+        await _cartRepository.DeleteAsync(cart);
 
         await _orderRepository.SaveChangesAsync(
             cancellationToken);

@@ -1,5 +1,7 @@
+
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using ECommerce.Application.Exceptions;
 
 namespace ECommerce.Api.Middleware;
 
@@ -24,6 +26,9 @@ public class GlobalExceptionHandler : IExceptionHandler
 
         var statusCode = exception switch
         {
+            ConcurrencyException =>
+                StatusCodes.Status409Conflict,
+
             InvalidOperationException =>
                 StatusCodes.Status409Conflict,
 
@@ -39,12 +44,21 @@ public class GlobalExceptionHandler : IExceptionHandler
         var problemDetails = new ProblemDetails
         {
             Status = statusCode,
-            Title = statusCode switch
+            Title = exception switch
             {
-                400 => "Bad Request",
-                409 => "Conflict",
-                _ => "Internal Server Error"
+                ConcurrencyException =>
+                    "Concurrency conflict",
+
+                ArgumentException =>
+                    "Bad Request",
+
+                InvalidOperationException =>
+                    "Conflict",
+
+                _ =>
+                    "Internal Server Error"
             },
+
             Detail = exception.Message,
             Instance = httpContext.Request.Path
         };

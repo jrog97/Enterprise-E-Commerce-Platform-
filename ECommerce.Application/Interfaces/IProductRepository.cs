@@ -25,4 +25,8 @@ public interface IProductRepository
     Task<bool> CategoryExistsAsync(
         Guid categoryId,
         CancellationToken cancellationToken = default);
+
+    Task<Product?> GetByIdForUpdateAsync(
+        Guid id,
+        CancellationToken cancellationToken = default);
 }

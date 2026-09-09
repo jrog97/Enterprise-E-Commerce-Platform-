@@ -1,6 +1,8 @@
 using ECommerce.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ECommerce.Application.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Data;
 
@@ -31,5 +33,21 @@ public class ECommerceDbContext
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(ECommerceDbContext).Assembly);
     }
+
+
+    public override async Task<int> SaveChangesAsync(
+    CancellationToken cancellationToken = default)
+{
+    try
+    {
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+    catch (DbUpdateConcurrencyException ex)
+    {
+        throw new ConcurrencyException(
+            "The resource was modified by another request. Please retry.",
+            ex);
+    }
+}
 }
 

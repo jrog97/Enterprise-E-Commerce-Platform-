@@ -13,6 +13,7 @@ public class Product
     public DateTime UpdatedAt { get; private set; }
     public Guid CategoryId { get; private set; }
     public Category Category { get; private set; } = null!;
+    public int Version { get; private set; }
 
     private Product()
     {

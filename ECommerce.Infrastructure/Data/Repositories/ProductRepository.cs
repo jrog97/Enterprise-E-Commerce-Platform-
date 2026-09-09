@@ -69,4 +69,14 @@ public class ProductRepository : IProductRepository
             cancellationToken);
 }
 
+public async Task<Product?> GetByIdForUpdateAsync(
+    Guid id,
+    CancellationToken cancellationToken = default)
+{
+    return await _dbContext.Products
+        .FirstOrDefaultAsync(
+            product => product.Id == id,
+            cancellationToken);
+}
+
 }
