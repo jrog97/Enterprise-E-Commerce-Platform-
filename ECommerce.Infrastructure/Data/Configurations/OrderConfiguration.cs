@@ -45,5 +45,11 @@ public class OrderConfiguration
             .WithOne(item => item.Order)
             .HasForeignKey(item => item.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Property(order => order.PaymentStatus)
+             .IsRequired();
+
+        builder.Property(order => order.PaymentTransactionId)
+            .HasMaxLength(200);
     }
 }

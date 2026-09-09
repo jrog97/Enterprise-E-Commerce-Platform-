@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using ECommerce.Infrastructure.Payments;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -116,6 +117,8 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+builder.Services.AddScoped<IPaymentProcessor, MockPaymentProcessor>();
 
 
 var app = builder.Build();

@@ -25,6 +25,10 @@ public class Order
     public ICollection<OrderItem> Items { get; private set; }
         = new List<OrderItem>();
 
+    public PaymentStatus PaymentStatus { get; private set; }
+
+    public string? PaymentTransactionId { get; private set; }
+
     private Order()
     {
     }
@@ -54,6 +58,7 @@ public class Order
         Total = subtotal + tax;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
+        PaymentStatus = PaymentStatus.Pending;
     }
 
     public void Confirm()
@@ -80,4 +85,31 @@ public class Order
         Status = OrderStatus.Cancelled;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void MarkPaymentAuthorized(string transactionId)
+{
+    if (string.IsNullOrWhiteSpace(transactionId))
+        throw new ArgumentException(
+            "Transaction ID is required.");
+
+    PaymentStatus = PaymentStatus.Authorized;
+    PaymentTransactionId = transactionId;
+    UpdatedAt = DateTime.UtcNow;
+}
+
+public void MarkAsPaid()
+{
+    if (PaymentStatus != PaymentStatus.Authorized)
+        throw new InvalidOperationException(
+            "Payment must be authorized before marking the order as paid.");
+
+    PaymentStatus = PaymentStatus.Paid;
+    UpdatedAt = DateTime.UtcNow;
+}
+
+public void MarkPaymentFailed()
+{
+    PaymentStatus = PaymentStatus.Failed;
+    UpdatedAt = DateTime.UtcNow;
+}
 }

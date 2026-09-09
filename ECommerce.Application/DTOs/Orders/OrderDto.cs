@@ -18,4 +18,7 @@ public class OrderDto
 
     public IReadOnlyList<OrderItemDto> Items { get; init; }
         = [];
+
+    public string PaymentStatus { get; init; } = string.Empty;
+    public string? PaymentTransactionId { get; init; }
 }

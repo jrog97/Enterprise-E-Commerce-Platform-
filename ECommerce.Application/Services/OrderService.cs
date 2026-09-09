@@ -9,16 +9,19 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly ICartRepository _cartRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IPaymentProcessor _paymentProcessor;
 
-    public OrderService(
-        IOrderRepository orderRepository,
-        ICartRepository cartRepository,
-        IProductRepository productRepository)
-    {
-        _orderRepository = orderRepository;
-        _cartRepository = cartRepository;
-        _productRepository = productRepository;
-    }
+   public OrderService(
+    IOrderRepository orderRepository,
+    ICartRepository cartRepository,
+    IProductRepository productRepository,
+    IPaymentProcessor paymentProcessor)
+{
+    _orderRepository = orderRepository;
+    _cartRepository = cartRepository;
+    _productRepository = productRepository;
+    _paymentProcessor = paymentProcessor;
+}
 
     public async Task<OrderDto> CreateOrderAsync(
         Guid userId,
@@ -106,6 +109,29 @@ public class OrderService : IOrderService
                     item.Quantity));
         }
 
+
+
+        var paymentResult =
+            await _paymentProcessor.ProcessPaymentAsync(
+            order.Id,
+            order.Total,
+            cancellationToken);
+
+        if (!paymentResult.Successful)
+    {
+           order.MarkPaymentFailed();
+
+          throw new InvalidOperationException(
+            paymentResult.ErrorMessage ??
+            "Payment failed.");
+    }
+
+        order.MarkPaymentAuthorized(
+            paymentResult.TransactionId);
+
+        order.MarkAsPaid();
+
+
         order.Confirm();
 
         await _orderRepository.AddAsync(
@@ -162,6 +188,8 @@ public class OrderService : IOrderService
             Tax = order.Tax,
             Total = order.Total,
             CreatedAt = order.CreatedAt,
+            PaymentStatus = order.PaymentStatus.ToString(),
+            PaymentTransactionId = order.PaymentTransactionId,
 
             Items = order.Items
                 .Select(item => new OrderItemDto
