@@ -18,4 +18,7 @@ public interface IOrderRepository
 
     Task SaveChangesAsync(
         CancellationToken cancellationToken = default);
+
+    Task<List<Order>> GetAllAsync(
+         CancellationToken cancellationToken = default);
 }

@@ -16,4 +16,26 @@ public interface IOrderService
         Guid userId,
         Guid orderId,
         CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<OrderDto>> GetAllOrdersAsync(
+    CancellationToken cancellationToken = default);
+
+    Task<OrderDto> ConfirmOrderAsync(
+        Guid orderId,
+        CancellationToken cancellationToken = default);
+
+    Task<OrderDto> StartProcessingAsync(
+        Guid orderId,
+        CancellationToken cancellationToken = default);
+
+    Task<OrderDto> ShipOrderAsync(
+        Guid orderId,
+        CancellationToken cancellationToken = default);
+
+    Task<OrderDto> DeliverOrderAsync(
+        Guid orderId,
+        CancellationToken cancellationToken = default);
+
+    Task<OrderDto> CancelOrderAsync(
+        Guid orderId,
+        CancellationToken cancellationToken = default);
 }

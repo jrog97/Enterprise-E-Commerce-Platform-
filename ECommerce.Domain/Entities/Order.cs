@@ -112,4 +112,41 @@ public void MarkPaymentFailed()
     PaymentStatus = PaymentStatus.Failed;
     UpdatedAt = DateTime.UtcNow;
 }
+
+
+public void StartProcessing()
+{
+    if (Status != OrderStatus.Confirmed)
+    {
+        throw new InvalidOperationException(
+            "Only confirmed orders can be moved to processing.");
+    }
+
+    Status = OrderStatus.Processing;
+    UpdatedAt = DateTime.UtcNow;
+}
+
+public void Ship()
+{
+    if (Status != OrderStatus.Processing)
+    {
+        throw new InvalidOperationException(
+            "Only processing orders can be shipped.");
+    }
+
+    Status = OrderStatus.Shipped;
+    UpdatedAt = DateTime.UtcNow;
+}
+
+public void Deliver()
+{
+    if (Status != OrderStatus.Shipped)
+    {
+        throw new InvalidOperationException(
+            "Only shipped orders can be delivered.");
+    }
+
+    Status = OrderStatus.Delivered;
+    UpdatedAt = DateTime.UtcNow;
+}
 }

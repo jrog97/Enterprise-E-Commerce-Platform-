@@ -53,4 +53,14 @@ public class OrderRepository : IOrderRepository
         await _dbContext.SaveChangesAsync(
             cancellationToken);
     }
+
+    public async Task<List<Order>> GetAllAsync(
+    CancellationToken cancellationToken = default)
+    {
+    return await _dbContext.Orders
+        .AsNoTracking()
+        .Include(order => order.Items)
+        .OrderByDescending(order => order.CreatedAt)
+        .ToListAsync(cancellationToken);
+    }
 }

@@ -123,14 +123,19 @@ builder.Services.AddScoped<IPaymentProcessor, MockPaymentProcessor>();
 
 var app = builder.Build();
 
-
-// Seed Identity Roles
+// Apply database migrations
 using (var scope = app.Services.CreateScope())
 {
+    var dbContext =
+        scope.ServiceProvider
+            .GetRequiredService<ECommerceDbContext>();
+
+    await dbContext.Database.MigrateAsync();
+
+    // Seed Identity Roles
     await IdentitySeeder.SeedRolesAsync(
         scope.ServiceProvider);
 }
-
 
 // Exception Handling
 app.UseExceptionHandler();
@@ -154,3 +159,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program
+{
+}

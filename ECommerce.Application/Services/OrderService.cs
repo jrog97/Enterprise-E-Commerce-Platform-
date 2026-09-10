@@ -203,4 +203,112 @@ public class OrderService : IOrderService
                 .ToList()
         };
     }
+    public async Task<IReadOnlyList<OrderDto>> GetAllOrdersAsync(
+    CancellationToken cancellationToken = default)
+{
+    var orders = await _orderRepository.GetAllAsync(
+        cancellationToken);
+
+    return orders
+        .Select(MapToDto)
+        .ToList();
+}
+
+private async Task<Order> GetOrderOrThrowAsync(
+    Guid orderId,
+    CancellationToken cancellationToken)
+{
+    var order = await _orderRepository.GetByIdAsync(
+        orderId,
+        cancellationToken);
+
+    if (order == null)
+    {
+        throw new InvalidOperationException(
+            "Order was not found.");
+    }
+
+    return order;
+}
+
+public async Task<OrderDto> ConfirmOrderAsync(
+    Guid orderId,
+    CancellationToken cancellationToken = default)
+{
+    var order = await GetOrderOrThrowAsync(
+        orderId,
+        cancellationToken);
+
+    order.Confirm();
+
+    await _orderRepository.SaveChangesAsync(
+        cancellationToken);
+
+    return MapToDto(order);
+}
+
+public async Task<OrderDto> StartProcessingAsync(
+    Guid orderId,
+    CancellationToken cancellationToken = default)
+{
+    var order = await GetOrderOrThrowAsync(
+        orderId,
+        cancellationToken);
+
+    order.StartProcessing();
+
+    await _orderRepository.SaveChangesAsync(
+        cancellationToken);
+
+    return MapToDto(order);
+}
+
+public async Task<OrderDto> ShipOrderAsync(
+    Guid orderId,
+    CancellationToken cancellationToken = default)
+{
+    var order = await GetOrderOrThrowAsync(
+        orderId,
+        cancellationToken);
+
+    order.Ship();
+
+    await _orderRepository.SaveChangesAsync(
+        cancellationToken);
+
+    return MapToDto(order);
+}
+
+public async Task<OrderDto> DeliverOrderAsync(
+    Guid orderId,
+    CancellationToken cancellationToken = default)
+{
+    var order = await GetOrderOrThrowAsync(
+        orderId,
+        cancellationToken);
+
+    order.Deliver();
+
+    await _orderRepository.SaveChangesAsync(
+        cancellationToken);
+
+    return MapToDto(order);
+}
+
+
+public async Task<OrderDto> CancelOrderAsync(
+    Guid orderId,
+    CancellationToken cancellationToken = default)
+{
+    var order = await GetOrderOrThrowAsync(
+        orderId,
+        cancellationToken);
+
+    order.Cancel();
+
+    await _orderRepository.SaveChangesAsync(
+        cancellationToken);
+
+    return MapToDto(order);
+}
 }
