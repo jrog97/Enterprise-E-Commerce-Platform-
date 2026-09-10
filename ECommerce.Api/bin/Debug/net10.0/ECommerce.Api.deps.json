@@ -547,6 +547,26 @@
           }
         }
       },
+      "RESPite/3.1.31": {
+        "runtime": {
+          "lib/net10.0/RESPite.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.1.31.37051"
+          }
+        }
+      },
+      "StackExchange.Redis/3.1.31": {
+        "dependencies": {
+          "RESPite": "3.1.31",
+          "System.IO.Hashing": "10.0.5"
+        },
+        "runtime": {
+          "lib/net10.0/StackExchange.Redis.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.1.31.37051"
+          }
+        }
+      },
       "Swashbuckle.AspNetCore/10.2.3": {
         "dependencies": {
           "Swashbuckle.AspNetCore.Swagger": "10.2.3",
@@ -664,6 +684,14 @@
           }
         }
       },
+      "System.IO.Hashing/10.0.5": {
+        "runtime": {
+          "lib/net10.0/System.IO.Hashing.dll": {
+            "assemblyVersion": "10.0.0.5",
+            "fileVersion": "10.0.526.15411"
+          }
+        }
+      },
       "ECommerce.Application/1.0.0": {
         "dependencies": {
           "ECommerce.Domain": "1.0.0",
@@ -693,6 +721,7 @@
           "Microsoft.EntityFrameworkCore": "10.0.11",
           "Microsoft.IdentityModel.Tokens": "8.22.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "10.0.3",
+          "StackExchange.Redis": "3.1.31",
           "System.IdentityModel.Tokens.Jwt": "8.22.0"
         },
         "runtime": {
@@ -920,6 +949,20 @@
       "path": "npgsql.entityframeworkcore.postgresql/10.0.3",
       "hashPath": "npgsql.entityframeworkcore.postgresql.10.0.3.nupkg.sha512"
     },
+    "RESPite/3.1.31": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-u+MFK6FzGWngKaY3wJ/V9vQSVe/NSqpk0IYYw6ACwmlPq5eTnsyZGlzEa3YMifJGVs3omrl5MkgigB1jZYNnGg==",
+      "path": "respite/3.1.31",
+      "hashPath": "respite.3.1.31.nupkg.sha512"
+    },
+    "StackExchange.Redis/3.1.31": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-QillloeZxgw9+IWmnowTrjrn+JV7JIMVzr1JiUpCa7pJQI48rtcqG9yy6u5UBRiTuCiKU5909aRu67Ch6gWVMg==",
+      "path": "stackexchange.redis/3.1.31",
+      "hashPath": "stackexchange.redis.3.1.31.nupkg.sha512"
+    },
     "Swashbuckle.AspNetCore/10.2.3": {
       "type": "package",
       "serviceable": true,
@@ -1003,6 +1046,13 @@
       "sha512": "sha512-CpXGfNhLl6EgYaOC9XYsc1p7Ci9HtAy0soHJDSBNGse647al4tTq9RDr+LQsrF4Ls79Dx7VfzN34km0W4DWPow==",
       "path": "system.identitymodel.tokens.jwt/8.22.0",
       "hashPath": "system.identitymodel.tokens.jwt.8.22.0.nupkg.sha512"
+    },
+    "System.IO.Hashing/10.0.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8IBJWcCT9+e4Bmevm4T7+fQEiAh133KGiz4oiVTgJckd3Q76OFdR1falgn9lpz7+C4HJvogCDJeAa2QmvbeVtg==",
+      "path": "system.io.hashing/10.0.5",
+      "hashPath": "system.io.hashing.10.0.5.nupkg.sha512"
     },
     "ECommerce.Application/1.0.0": {
       "type": "project",

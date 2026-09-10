@@ -1,5 +1,6 @@
 using ECommerce.Application.DTOs.Products;
 using ECommerce.Application.Interfaces;
+using ECommerce.Application.Constants;
 using ECommerce.Domain.Entities;
 
 namespace ECommerce.Application.Services;
@@ -7,35 +8,81 @@ namespace ECommerce.Application.Services;
 public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
+    private readonly ICacheService _cacheService;
 
     public ProductService(
-        IProductRepository productRepository)
+        IProductRepository productRepository,
+         ICacheService cacheService)
     {
         _productRepository = productRepository;
+        _cacheService = cacheService;
     }
 
     public async Task<IReadOnlyList<ProductDto>> GetProductsAsync(
-        CancellationToken cancellationToken = default)
-    {
-        var products = await _productRepository
-            .GetAllAsync(cancellationToken);
+    CancellationToken cancellationToken = default)
+{
+    var cachedProducts =
+        await _cacheService.GetAsync<List<ProductDto>>(
+            CacheKeys.Products,
+            cancellationToken);
 
-        return products
-            .Select(MapToDto)
-            .ToList();
+    if (cachedProducts != null)
+    {
+        return cachedProducts;
     }
+
+    var products =
+        await _productRepository.GetAllAsync(
+            cancellationToken);
+
+    var productDtos =
+        products.Select(MapToDto).ToList();
+
+    await _cacheService.SetAsync(
+        CacheKeys.Products,
+        productDtos,
+        TimeSpan.FromMinutes(5),
+        cancellationToken);
+
+    return productDtos;
+}
 
     public async Task<ProductDto?> GetProductByIdAsync(
-        Guid id,
-        CancellationToken cancellationToken = default)
-    {
-        var product = await _productRepository
-            .GetByIdAsync(id, cancellationToken);
+    Guid id,
+    CancellationToken cancellationToken = default)
+{
+    var cacheKey = CacheKeys.Product(id);
 
-        return product is null
-            ? null
-            : MapToDto(product);
+    var cachedProduct =
+        await _cacheService.GetAsync<ProductDto>(
+            cacheKey,
+            cancellationToken);
+
+    if (cachedProduct != null)
+    {
+        return cachedProduct;
     }
+
+    var product =
+        await _productRepository.GetByIdAsync(
+            id,
+            cancellationToken);
+
+    if (product == null)
+    {
+        return null;
+    }
+
+    var productDto = MapToDto(product);
+
+    await _cacheService.SetAsync(
+        cacheKey,
+        productDto,
+        TimeSpan.FromMinutes(5),
+        cancellationToken);
+
+    return productDto;
+}
 
     public async Task<ProductDto> CreateProductAsync(
     CreateProductRequest request,
@@ -80,6 +127,14 @@ public class ProductService : IProductService
 
     await _productRepository.SaveChangesAsync(
         cancellationToken);
+    
+    await _cacheService.RemoveAsync(
+    CacheKeys.Products,
+    cancellationToken);
+
+    await _cacheService.RemoveAsync(
+    CacheKeys.Product(product.Id),
+    cancellationToken);
 
     return MapToDto(product);
 }

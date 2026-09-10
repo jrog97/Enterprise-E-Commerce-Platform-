@@ -461,3 +461,6 @@
 /Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/ECommerce.Infrastructure.dll
 /Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/ECommerce.Api.pdb
 /Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/ECommerce.Infrastructure.pdb
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/RESPite.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/StackExchange.Redis.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/bin/Debug/net10.0/System.IO.Hashing.dll

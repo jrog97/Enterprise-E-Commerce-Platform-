@@ -3,20 +3,24 @@ using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
 using ECommerce.Domain.Entities;
 using Moq;
+using ECommerce.Application.Constants;
 
 namespace ECommerce.UnitTests.Services;
 
 public class ProductServiceTests
 {
 private readonly Mock<IProductRepository> _repositoryMock;
+private readonly Mock<ICacheService> _cacheServiceMock;
 private readonly ProductService _productService;
 
 public ProductServiceTests()
 {
     _repositoryMock = new Mock<IProductRepository>();
+    _cacheServiceMock = new Mock<ICacheService>();
 
     _productService = new ProductService(
-        _repositoryMock.Object);
+        _repositoryMock.Object,
+        _cacheServiceMock.Object);
 }
 
 [Fact]
@@ -289,6 +293,36 @@ public async Task CreateProductAsync_InvalidPrice_ThrowsException()
         "price",
         exception.Message,
         StringComparison.OrdinalIgnoreCase);
+}
+
+[Fact]
+public async Task GetProducts_WhenCacheExists_ShouldNotQueryRepository()
+{
+    var cachedProducts = new List<ProductDto>
+    {
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Cached Product",
+            Price = 99.99m
+        }
+    };
+
+    _cacheServiceMock
+        .Setup(x => x.GetAsync<List<ProductDto>>(
+            CacheKeys.Products,
+            It.IsAny<CancellationToken>()))
+        .ReturnsAsync(cachedProducts);
+
+    var result =
+        await _productService.GetProductsAsync();
+
+    Assert.Single(result);
+
+    _repositoryMock.Verify(
+        x => x.GetAllAsync(
+            It.IsAny<CancellationToken>()),
+        Times.Never);
 }
 
 }

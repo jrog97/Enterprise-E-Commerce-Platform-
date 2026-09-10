@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "L580WsuCtdc=",
+  "dgSpecHash": "KvIjmPcGCZk=",
   "success": true,
   "projectFilePath": "/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Api/ECommerce.Api.csproj",
   "expectedPackageFiles": [
@@ -37,6 +37,8 @@
     "/Users/jerry/.nuget/packages/newtonsoft.json/13.0.4/newtonsoft.json.13.0.4.nupkg.sha512",
     "/Users/jerry/.nuget/packages/npgsql/10.0.3/npgsql.10.0.3.nupkg.sha512",
     "/Users/jerry/.nuget/packages/npgsql.entityframeworkcore.postgresql/10.0.3/npgsql.entityframeworkcore.postgresql.10.0.3.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/respite/3.1.31/respite.3.1.31.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/stackexchange.redis/3.1.31/stackexchange.redis.3.1.31.nupkg.sha512",
     "/Users/jerry/.nuget/packages/swashbuckle.aspnetcore/10.2.3/swashbuckle.aspnetcore.10.2.3.nupkg.sha512",
     "/Users/jerry/.nuget/packages/swashbuckle.aspnetcore.swagger/10.2.3/swashbuckle.aspnetcore.swagger.10.2.3.nupkg.sha512",
     "/Users/jerry/.nuget/packages/swashbuckle.aspnetcore.swaggergen/10.2.3/swashbuckle.aspnetcore.swaggergen.10.2.3.nupkg.sha512",
@@ -48,7 +50,8 @@
     "/Users/jerry/.nuget/packages/system.composition.hosting/9.0.0/system.composition.hosting.9.0.0.nupkg.sha512",
     "/Users/jerry/.nuget/packages/system.composition.runtime/9.0.0/system.composition.runtime.9.0.0.nupkg.sha512",
     "/Users/jerry/.nuget/packages/system.composition.typedparts/9.0.0/system.composition.typedparts.9.0.0.nupkg.sha512",
-    "/Users/jerry/.nuget/packages/system.identitymodel.tokens.jwt/8.22.0/system.identitymodel.tokens.jwt.8.22.0.nupkg.sha512"
+    "/Users/jerry/.nuget/packages/system.identitymodel.tokens.jwt/8.22.0/system.identitymodel.tokens.jwt.8.22.0.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/system.io.hashing/10.0.5/system.io.hashing.10.0.5.nupkg.sha512"
   ],
   "logs": []
 }

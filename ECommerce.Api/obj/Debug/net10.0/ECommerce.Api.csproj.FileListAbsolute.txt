@@ -142,3 +142,6 @@
 /Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Api/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 /Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Api/bin/Debug/net10.0/Microsoft.IdentityModel.Tokens.dll
 /Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Api/bin/Debug/net10.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Api/bin/Debug/net10.0/RESPite.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Api/bin/Debug/net10.0/StackExchange.Redis.dll
+/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Api/bin/Debug/net10.0/System.IO.Hashing.dll

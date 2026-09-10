@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ECommerce.Infrastructure.Payments;
+using StackExchange.Redis;
+using ECommerce.Infrastructure.Caching;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -91,7 +93,16 @@ var jwtIssuer = builder.Configuration["Jwt:Issuer"]
 var jwtAudience = builder.Configuration["Jwt:Audience"]
     ?? throw new InvalidOperationException(
         "JWT audience is not configured.");
+var redisConnection =
+    builder.Configuration.GetConnectionString("Redis")
+    ?? "localhost:6379";
 
+  builder.Services.AddSingleton<IConnectionMultiplexer>(
+    ConnectionMultiplexer.Connect(redisConnection));
+
+builder.Services.AddScoped<
+    ICacheService,
+    RedisCacheService>();
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
