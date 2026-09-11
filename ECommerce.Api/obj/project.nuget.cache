@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "KvIjmPcGCZk=",
+  "dgSpecHash": "0pF9wlVo02I=",
   "success": true,
   "projectFilePath": "/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Api/ECommerce.Api.csproj",
   "expectedPackageFiles": [
+    "/Users/jerry/.nuget/packages/confluent.kafka/2.15.1/confluent.kafka.2.15.1.nupkg.sha512",
     "/Users/jerry/.nuget/packages/fluentvalidation/12.1.1/fluentvalidation.12.1.1.nupkg.sha512",
     "/Users/jerry/.nuget/packages/fluentvalidation.dependencyinjectionextensions/12.1.1/fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",
     "/Users/jerry/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/librdkafka.redist/2.15.1/librdkafka.redist.2.15.1.nupkg.sha512",
     "/Users/jerry/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/10.0.11/microsoft.aspnetcore.authentication.jwtbearer.10.0.11.nupkg.sha512",
     "/Users/jerry/.nuget/packages/microsoft.aspnetcore.identity.entityframeworkcore/10.0.11/microsoft.aspnetcore.identity.entityframeworkcore.10.0.11.nupkg.sha512",
     "/Users/jerry/.nuget/packages/microsoft.aspnetcore.openapi/10.0.11/microsoft.aspnetcore.openapi.10.0.11.nupkg.sha512",

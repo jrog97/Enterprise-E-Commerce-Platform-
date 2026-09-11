@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "Fk7TjIxJWfA=",
+  "dgSpecHash": "vPG6Bh6w6a0=",
   "success": true,
   "projectFilePath": "/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/ECommerce.UnitTests.csproj",
   "expectedPackageFiles": [
     "/Users/jerry/.nuget/packages/bouncycastle.cryptography/2.7.0/bouncycastle.cryptography.2.7.0.nupkg.sha512",
     "/Users/jerry/.nuget/packages/castle.core/5.1.1/castle.core.5.1.1.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/confluent.kafka/2.15.1/confluent.kafka.2.15.1.nupkg.sha512",
     "/Users/jerry/.nuget/packages/coverlet.collector/6.0.4/coverlet.collector.6.0.4.nupkg.sha512",
     "/Users/jerry/.nuget/packages/docker.dotnet.enhanced/4.3.3/docker.dotnet.enhanced.4.3.3.nupkg.sha512",
     "/Users/jerry/.nuget/packages/docker.dotnet.enhanced.handler.abstractions/4.3.3/docker.dotnet.enhanced.handler.abstractions.4.3.3.nupkg.sha512",
@@ -16,6 +17,7 @@
     "/Users/jerry/.nuget/packages/docker.dotnet.enhanced.x509/4.3.3/docker.dotnet.enhanced.x509.4.3.3.nupkg.sha512",
     "/Users/jerry/.nuget/packages/fluentvalidation/12.1.1/fluentvalidation.12.1.1.nupkg.sha512",
     "/Users/jerry/.nuget/packages/fluentvalidation.dependencyinjectionextensions/12.1.1/fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/librdkafka.redist/2.15.1/librdkafka.redist.2.15.1.nupkg.sha512",
     "/Users/jerry/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/10.0.11/microsoft.aspnetcore.authentication.jwtbearer.10.0.11.nupkg.sha512",
     "/Users/jerry/.nuget/packages/microsoft.aspnetcore.cryptography.internal/10.0.11/microsoft.aspnetcore.cryptography.internal.10.0.11.nupkg.sha512",
     "/Users/jerry/.nuget/packages/microsoft.aspnetcore.cryptography.keyderivation/10.0.11/microsoft.aspnetcore.cryptography.keyderivation.10.0.11.nupkg.sha512",

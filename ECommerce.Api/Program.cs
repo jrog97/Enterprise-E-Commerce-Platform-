@@ -15,6 +15,7 @@ using ECommerce.Infrastructure.Payments;
 using StackExchange.Redis;
 using ECommerce.Infrastructure.Caching;
 using System.Text;
+using ECommerce.Infrastructure.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -125,7 +126,7 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
-
+builder.Services.AddSingleton<IEventPublisher, KafkaEventPublisher>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
