@@ -1,6 +1,7 @@
 using ECommerce.Application.DTOs.Orders;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Entities;
+using ECommerce.Application.Events;
 
 namespace ECommerce.Application.Services;
 
@@ -10,17 +11,21 @@ public class OrderService : IOrderService
     private readonly ICartRepository _cartRepository;
     private readonly IProductRepository _productRepository;
     private readonly IPaymentProcessor _paymentProcessor;
+    private readonly IEventPublisher _eventPublisher;
 
    public OrderService(
     IOrderRepository orderRepository,
     ICartRepository cartRepository,
     IProductRepository productRepository,
-    IPaymentProcessor paymentProcessor)
+    IPaymentProcessor paymentProcessor,
+    IEventPublisher eventPublisher)
 {
     _orderRepository = orderRepository;
     _cartRepository = cartRepository;
     _productRepository = productRepository;
     _paymentProcessor = paymentProcessor;
+    _eventPublisher = eventPublisher;
+
 }
 
     public async Task<OrderDto> CreateOrderAsync(
@@ -134,16 +139,26 @@ public class OrderService : IOrderService
 
         order.Confirm();
 
-        await _orderRepository.AddAsync(
-            order,
-            cancellationToken);
+await _orderRepository.AddAsync(order, cancellationToken);
 
-        await _cartRepository.DeleteAsync(cart);
+await _cartRepository.DeleteAsync(cart, cancellationToken);
 
-        await _orderRepository.SaveChangesAsync(
-            cancellationToken);
+await _orderRepository.SaveChangesAsync(cancellationToken);
 
-        return MapToDto(order);
+var orderCreatedEvent = new OrderCreatedEvent
+{
+    OrderId = order.Id,
+    UserId = userId,
+    Total = order.Total,
+    CreatedAt = order.CreatedAt
+};
+
+await _eventPublisher.PublishAsync(
+    "order-created",
+    orderCreatedEvent,
+    cancellationToken);
+
+return MapToDto(order);
     }
 
     public async Task<IReadOnlyList<OrderDto>> GetOrdersAsync(
