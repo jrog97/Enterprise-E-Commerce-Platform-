@@ -16,6 +16,7 @@ using StackExchange.Redis;
 using ECommerce.Infrastructure.Caching;
 using System.Text;
 using ECommerce.Infrastructure.Messaging;
+using ECommerce.Infrastructure.Messaging.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,8 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IOrderService,
     OrderService>();
+
+builder.Services.AddHostedService<OrderCreatedConsumer>();
 
 builder.Services.AddDbContext<ECommerceDbContext>(options =>
 {

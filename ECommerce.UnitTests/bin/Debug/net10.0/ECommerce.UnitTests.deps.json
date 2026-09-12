@@ -1951,6 +1951,7 @@
           "ECommerce.Domain": "1.0.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "10.0.11",
           "Microsoft.EntityFrameworkCore": "10.0.11",
+          "Microsoft.Extensions.Hosting": "10.0.12",
           "Microsoft.IdentityModel.Tokens": "8.22.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "10.0.3",
           "StackExchange.Redis": "3.1.31",

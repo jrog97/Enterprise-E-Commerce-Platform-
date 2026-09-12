@@ -2,6 +2,7 @@ using System.Text.Json;
 using Confluent.Kafka;
 using ECommerce.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
+using ECommerce.Application.Events;
 
 namespace ECommerce.Infrastructure.Messaging;
 
@@ -44,7 +45,9 @@ public class KafkaEventPublisher : IEventPublisher
             topic,
             new Message<string, string>
             {
-                Key = Guid.NewGuid().ToString(),
+                Key = eventMessage is OrderCreatedEvent orderCreated
+                ? orderCreated.OrderId.ToString()
+                : Guid.NewGuid().ToString(),
                 Value = message
             },
             cancellationToken);
