@@ -15,6 +15,7 @@ using ECommerce.Infrastructure.Payments;
 using StackExchange.Redis;
 using ECommerce.Infrastructure.Caching;
 using System.Text;
+using ECommerce.Infrastructure.Repositories;
 using ECommerce.Infrastructure.Messaging;
 using ECommerce.Infrastructure.Messaging.Consumers;
 
@@ -48,6 +49,12 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IOrderService,
     OrderService>();
+
+builder.Services.AddScoped<
+    IUnitOfWork,
+    UnitOfWork>();
+
+builder.Services.AddHostedService<OutboxProcessor>();
 
 builder.Services.AddHostedService<OrderCreatedConsumer>();
 
@@ -107,6 +114,11 @@ var redisConnection =
 builder.Services.AddScoped<
     ICacheService,
     RedisCacheService>();
+
+builder.Services.AddScoped<
+    IOutboxRepository,
+    OutboxRepository>();
+
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

@@ -25,6 +25,8 @@ public class ECommerceDbContext
     Set<Order>();
     public DbSet<OrderItem> OrderItems =>
     Set<OrderItem>();
+    public DbSet<OutboxEvent> OutboxEvents =>
+    Set<OutboxEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

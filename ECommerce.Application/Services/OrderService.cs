@@ -2,6 +2,7 @@ using ECommerce.Application.DTOs.Orders;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Entities;
 using ECommerce.Application.Events;
+using System.Text.Json;
 
 namespace ECommerce.Application.Services;
 
@@ -12,25 +13,38 @@ public class OrderService : IOrderService
     private readonly IProductRepository _productRepository;
     private readonly IPaymentProcessor _paymentProcessor;
     private readonly IEventPublisher _eventPublisher;
+    private readonly IOutboxRepository _outboxRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
    public OrderService(
     IOrderRepository orderRepository,
     ICartRepository cartRepository,
     IProductRepository productRepository,
     IPaymentProcessor paymentProcessor,
-    IEventPublisher eventPublisher)
+    IEventPublisher eventPublisher,
+    IOutboxRepository outboxRepository,
+    IUnitOfWork unitOfWork)
 {
     _orderRepository = orderRepository;
     _cartRepository = cartRepository;
     _productRepository = productRepository;
     _paymentProcessor = paymentProcessor;
     _eventPublisher = eventPublisher;
+    _outboxRepository = outboxRepository;
+    _unitOfWork = unitOfWork;
+
 
 }
 
+
     public async Task<OrderDto> CreateOrderAsync(
-        Guid userId,
-        CancellationToken cancellationToken = default)
+    Guid userId,
+    CancellationToken cancellationToken = default)
+{
+    await _unitOfWork.BeginTransactionAsync(
+        cancellationToken);
+
+    try
     {
         var cart = await _cartRepository.GetByUserIdAsync(
             userId,
@@ -53,9 +67,10 @@ public class OrderService : IOrderService
 
         foreach (var cartItem in cart.Items)
         {
-            var product = await _productRepository.GetByIdForUpdateAsync(
-                cartItem.ProductId,
-                cancellationToken);
+            var product =
+                await _productRepository.GetByIdForUpdateAsync(
+                    cartItem.ProductId,
+                    cancellationToken);
 
             if (product == null)
             {
@@ -82,7 +97,8 @@ public class OrderService : IOrderService
                 product.Price,
                 cartItem.Quantity));
 
-            subtotal += product.Price * cartItem.Quantity;
+            subtotal +=
+                product.Price * cartItem.Quantity;
         }
 
         subtotal = Math.Round(
@@ -114,52 +130,74 @@ public class OrderService : IOrderService
                     item.Quantity));
         }
 
-
-
         var paymentResult =
             await _paymentProcessor.ProcessPaymentAsync(
-            order.Id,
-            order.Total,
-            cancellationToken);
+                order.Id,
+                order.Total,
+                cancellationToken);
 
         if (!paymentResult.Successful)
-    {
-           order.MarkPaymentFailed();
+        {
+            order.MarkPaymentFailed();
 
-          throw new InvalidOperationException(
-            paymentResult.ErrorMessage ??
-            "Payment failed.");
-    }
+            throw new InvalidOperationException(
+                paymentResult.ErrorMessage ??
+                "Payment failed.");
+        }
 
         order.MarkPaymentAuthorized(
             paymentResult.TransactionId);
 
         order.MarkAsPaid();
 
-
         order.Confirm();
 
-await _orderRepository.AddAsync(order, cancellationToken);
+        await _orderRepository.AddAsync(
+            order,
+            cancellationToken);
 
-await _cartRepository.DeleteAsync(cart, cancellationToken);
+        await _cartRepository.DeleteAsync(
+            cart,
+            cancellationToken);
 
-await _orderRepository.SaveChangesAsync(cancellationToken);
+        var orderCreatedEvent =
+            new OrderCreatedEvent
+            {
+                OrderId = order.Id,
+                UserId = userId,
+                Total = order.Total,
+                CreatedAt = order.CreatedAt
+            };
 
-var orderCreatedEvent = new OrderCreatedEvent
-{
-    OrderId = order.Id,
-    UserId = userId,
-    Total = order.Total,
-    CreatedAt = order.CreatedAt
-};
+        var payload =
+            JsonSerializer.Serialize(
+                orderCreatedEvent);
 
-await _eventPublisher.PublishAsync(
-    "order-created",
-    orderCreatedEvent,
-    cancellationToken);
+        var outboxEvent =
+            new OutboxEvent(
+                "OrderCreated",
+                payload);
 
-return MapToDto(order);
+        await _outboxRepository.AddAsync(
+            outboxEvent,
+            cancellationToken);
+
+        await _unitOfWork.SaveChangesAsync(
+            cancellationToken);
+
+        await _unitOfWork.CommitTransactionAsync(
+            cancellationToken);
+
+        return MapToDto(order);
     }
+    catch
+    {
+        await _unitOfWork.RollbackTransactionAsync(
+            cancellationToken);
+
+        throw;
+    }
+}
 
     public async Task<IReadOnlyList<OrderDto>> GetOrdersAsync(
         Guid userId,
