@@ -14,6 +14,7 @@ public class OutboxProcessor : BackgroundService
     private readonly ILogger<OutboxProcessor> _logger;
 
     private const int BatchSize = 20;
+    private const int MaxRetries = 5;
 
     public OutboxProcessor(
         IServiceScopeFactory scopeFactory,
@@ -35,18 +36,31 @@ public class OutboxProcessor : BackgroundService
         {
             try
             {
-                await ProcessBatchAsync(stoppingToken);
+                await ProcessBatchAsync(
+                    stoppingToken);
+            }
+            catch (OperationCanceledException)
+                when (stoppingToken.IsCancellationRequested)
+            {
+                break;
             }
             catch (Exception ex)
             {
                 _logger.LogError(
                     ex,
-                    "Error while processing outbox events.");
+                    "Unexpected error in outbox processor.");
             }
 
-            await Task.Delay(
-                TimeSpan.FromSeconds(2),
-                stoppingToken);
+            try
+            {
+                await Task.Delay(
+                    TimeSpan.FromSeconds(2),
+                    stoppingToken);
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
         }
 
         _logger.LogInformation(
@@ -68,11 +82,6 @@ public class OutboxProcessor : BackgroundService
                 BatchSize,
                 cancellationToken);
 
-        if (events.Count == 0)
-        {
-            return;
-        }
-
         foreach (var outboxEvent in events)
         {
             try
@@ -84,20 +93,15 @@ public class OutboxProcessor : BackgroundService
                 outboxEvent.MarkAsProcessed();
 
                 _logger.LogInformation(
-                    "Published outbox event {EventId}. " +
-                    "Type: {EventType}",
-                    outboxEvent.Id,
-                    outboxEvent.EventType);
+                    "Outbox event {EventId} published successfully.",
+                    outboxEvent.Id);
             }
             catch (Exception ex)
             {
-                outboxEvent.MarkAsFailed(
-                    ex.Message);
-
-                _logger.LogError(
+                await HandleFailureAsync(
+                    outboxEvent,
                     ex,
-                    "Failed to publish outbox event {EventId}.",
-                    outboxEvent.Id);
+                    cancellationToken);
             }
         }
 
@@ -135,5 +139,75 @@ public class OutboxProcessor : BackgroundService
                 throw new InvalidOperationException(
                     $"Unknown event type: {outboxEvent.EventType}");
         }
+    }
+
+    private async Task HandleFailureAsync(
+        ECommerce.Domain.Entities.OutboxEvent outboxEvent,
+        Exception exception,
+        CancellationToken cancellationToken)
+    {
+        if (outboxEvent.RetryCount >= MaxRetries)
+        {
+            await PublishToDeadLetterQueueAsync(
+                outboxEvent,
+                exception,
+                cancellationToken);
+
+            outboxEvent.MoveToDeadLetterQueue(
+            exception.Message);
+
+            _logger.LogError(
+                exception,
+                "Outbox event {EventId} exceeded maximum retries. " +
+                "Moved to dead-letter queue.",
+                outboxEvent.Id);
+
+            return;
+        }
+
+        var retryNumber =
+            outboxEvent.RetryCount + 1;
+
+        var delaySeconds =
+            Math.Min(
+                Math.Pow(2, retryNumber),
+                60);
+
+        var nextAttempt =
+            DateTime.UtcNow.AddSeconds(
+                delaySeconds);
+
+       outboxEvent.MarkAsFailed(
+            exception.Message);
+
+        _logger.LogWarning(
+            exception,
+            "Outbox event {EventId} failed. " +
+            "Retry #{RetryNumber} scheduled for {NextAttempt}.",
+            outboxEvent.Id,
+            retryNumber,
+            nextAttempt);
+    }
+
+    private async Task PublishToDeadLetterQueueAsync(
+        ECommerce.Domain.Entities.OutboxEvent outboxEvent,
+        Exception exception,
+        CancellationToken cancellationToken)
+    {
+        var deadLetterEvent =
+            new DeadLetterEvent
+            {
+                EventId = outboxEvent.Id,
+                EventType = outboxEvent.EventType,
+                Payload = outboxEvent.Payload,
+                Error = exception.Message,
+                RetryCount = outboxEvent.RetryCount,
+                FailedAt = DateTime.UtcNow
+            };
+
+        await _eventPublisher.PublishAsync(
+            "order-created-dlq",
+            deadLetterEvent,
+            cancellationToken);
     }
 }

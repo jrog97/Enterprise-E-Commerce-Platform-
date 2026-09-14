@@ -1,7 +1,10 @@
 using System.Text.Json;
 using Confluent.Kafka;
 using ECommerce.Application.Events;
+using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Entities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -12,15 +15,18 @@ public class OrderCreatedConsumer : BackgroundService
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<OrderCreatedConsumer> _logger;
+    private readonly IServiceScopeFactory _scopeFactory;
 
     private IConsumer<string, string>? _consumer;
 
     public OrderCreatedConsumer(
         IConfiguration configuration,
-        ILogger<OrderCreatedConsumer> logger)
+        ILogger<OrderCreatedConsumer> logger,
+        IServiceScopeFactory scopeFactory)
     {
         _configuration = configuration;
         _logger = logger;
+        _scopeFactory = scopeFactory;
     }
 
     protected override async Task ExecuteAsync(
@@ -64,6 +70,19 @@ public class OrderCreatedConsumer : BackgroundService
                                 PropertyNamingPolicy =
                                     JsonNamingPolicy.CamelCase
                             });
+                        if (orderCreatedEvent == null)
+                                {
+                                    _logger.LogWarning(
+                                        "Received invalid OrderCreated event.");
+
+                                    continue;
+                                }
+                        using var scope =
+                                _scopeFactory.CreateScope();
+
+                            var inboxRepository =
+                                scope.ServiceProvider
+                                    .GetRequiredService<IInboxRepository>();
 
                     if (orderCreatedEvent == null)
                     {
@@ -72,6 +91,35 @@ public class OrderCreatedConsumer : BackgroundService
 
                         continue;
                     }
+
+                    var alreadyProcessed =
+                        await inboxRepository.ExistsAsync(
+                            orderCreatedEvent.EventId,
+                            stoppingToken);
+
+                    if (alreadyProcessed)
+                            {
+                                _logger.LogInformation(
+                                    "Ignoring duplicate event {EventId}.",
+                                    orderCreatedEvent.EventId);
+
+                                _consumer.Commit(result);
+
+                                continue;
+                            }
+                        var inboxEvent =
+                                    new InboxEvent(
+                                        orderCreatedEvent.EventId,
+                                        "OrderCreated");
+
+                                await inboxRepository.AddAsync(
+                                    inboxEvent,
+                                    stoppingToken);
+
+                                await inboxRepository.SaveChangesAsync(
+                                    stoppingToken);
+
+                                _consumer.Commit(result);
 
                     _logger.LogInformation(
                         "Processing OrderCreated event. " +

@@ -33,5 +33,12 @@ public class OutboxEventConfiguration
         builder.HasIndex(x => x.ProcessedAt);
 
         builder.HasIndex(x => x.CreatedAt);
+        builder.Property(x => x.NextAttemptAt)
+        .IsRequired();
+        builder.HasIndex(x => new
+        {
+            x.ProcessedAt,
+            x.NextAttemptAt
+        });
     }
 }

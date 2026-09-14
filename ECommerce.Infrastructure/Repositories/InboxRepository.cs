@@ -5,37 +5,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Repositories;
 
-public class OutboxRepository : IOutboxRepository
+public class InboxRepository : IInboxRepository
 {
     private readonly ECommerceDbContext _dbContext;
 
-    public OutboxRepository(
+    public InboxRepository(
         ECommerceDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task AddAsync(
-        OutboxEvent outboxEvent,
+    public async Task<bool> ExistsAsync(
+        Guid eventId,
         CancellationToken cancellationToken = default)
     {
-        await _dbContext.OutboxEvents.AddAsync(
-            outboxEvent,
-            cancellationToken);
+        return await _dbContext.InboxEvents
+            .AnyAsync(
+                x => x.EventId == eventId,
+                cancellationToken);
     }
 
-    public async Task<List<OutboxEvent>> GetUnprocessedAsync(
-    int batchSize,
-    CancellationToken cancellationToken = default)
-{
-    return await _dbContext.OutboxEvents
-        .Where(x =>
-            x.ProcessedAt == null &&
-            x.NextAttemptAt <= DateTime.UtcNow)
-        .OrderBy(x => x.CreatedAt)
-        .Take(batchSize)
-        .ToListAsync(cancellationToken);
-}
+    public async Task AddAsync(
+        InboxEvent inboxEvent,
+        CancellationToken cancellationToken = default)
+    {
+        await _dbContext.InboxEvents.AddAsync(
+            inboxEvent,
+            cancellationToken);
+    }
 
     public async Task SaveChangesAsync(
         CancellationToken cancellationToken = default)
