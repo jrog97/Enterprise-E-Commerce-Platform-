@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-
 namespace ECommerce.Infrastructure.Messaging.Consumers;
 
 public class OrderCreatedConsumer : BackgroundService
@@ -16,8 +15,6 @@ public class OrderCreatedConsumer : BackgroundService
     private readonly IConfiguration _configuration;
     private readonly ILogger<OrderCreatedConsumer> _logger;
     private readonly IServiceScopeFactory _scopeFactory;
-
-    private IConsumer<string, string>? _consumer;
 
     public OrderCreatedConsumer(
         IConfiguration configuration,
@@ -44,11 +41,11 @@ public class OrderCreatedConsumer : BackgroundService
             EnableAutoCommit = false
         };
 
-        _consumer =
+        using var consumer =
             new ConsumerBuilder<string, string>(config)
                 .Build();
 
-        _consumer.Subscribe("order-created");
+        consumer.Subscribe("order-created");
 
         _logger.LogInformation(
             "OrderCreatedConsumer started.");
@@ -60,105 +57,65 @@ public class OrderCreatedConsumer : BackgroundService
                 try
                 {
                     var result =
-                        _consumer.Consume(stoppingToken);
+                        consumer.Consume(stoppingToken);
 
                     var orderCreatedEvent =
                         JsonSerializer.Deserialize<OrderCreatedEvent>(
-                            result.Message.Value,
-                            new JsonSerializerOptions
-                            {
-                                PropertyNamingPolicy =
-                                    JsonNamingPolicy.CamelCase
-                            });
-                        if (orderCreatedEvent == null)
-                                {
-                                    _logger.LogWarning(
-                                        "Received invalid OrderCreated event.");
+                            result.Message.Value);
 
-                                    continue;
-                                }
-                        using var scope =
-                                _scopeFactory.CreateScope();
-
-                            var inboxRepository =
-                                scope.ServiceProvider
-                                    .GetRequiredService<IInboxRepository>();
-
-                    if (orderCreatedEvent == null)
+                    if (orderCreatedEvent is null)
                     {
                         _logger.LogWarning(
                             "Received invalid OrderCreated event.");
 
+                        consumer.Commit(result);
                         continue;
                     }
 
-                    var alreadyProcessed =
-                        await inboxRepository.ExistsAsync(
+                    using var scope =
+                        _scopeFactory.CreateScope();
+
+                    var inboxRepository =
+                        scope.ServiceProvider
+                            .GetRequiredService<IInboxRepository>();
+
+                    var inboxEvent =
+                        new InboxEvent(
                             orderCreatedEvent.EventId,
-                            stoppingToken);
+                            "OrderCreated");
 
-                    if (alreadyProcessed)
-                            {
-                                _logger.LogInformation(
-                                    "Ignoring duplicate event {EventId}.",
-                                    orderCreatedEvent.EventId);
+                    await inboxRepository.AddAsync(
+                        inboxEvent,
+                        stoppingToken);
 
-                                _consumer.Commit(result);
+                    await inboxRepository.SaveChangesAsync(
+                        stoppingToken);
 
-                                continue;
-                            }
-                        var inboxEvent =
-                                    new InboxEvent(
-                                        orderCreatedEvent.EventId,
-                                        "OrderCreated");
-
-                                await inboxRepository.AddAsync(
-                                    inboxEvent,
-                                    stoppingToken);
-
-                                await inboxRepository.SaveChangesAsync(
-                                    stoppingToken);
-
-                                _consumer.Commit(result);
+                    consumer.Commit(result);
 
                     _logger.LogInformation(
-                        "Processing OrderCreated event. " +
-                        "EventId: {EventId}, OrderId: {OrderId}, " +
-                        "UserId: {UserId}, Total: {Total}",
-                        orderCreatedEvent.EventId,
-                        orderCreatedEvent.OrderId,
-                        orderCreatedEvent.UserId,
-                        orderCreatedEvent.Total);
-
-                    // Inventory processing will be implemented
-                    // in a later milestone.
-
-                    _consumer.Commit(result);
-
-                    _logger.LogInformation(
-                        "OrderCreated event processed successfully. " +
-                        "OrderId: {OrderId}",
+                        "Processed OrderCreated event for OrderId {OrderId}.",
                         orderCreatedEvent.OrderId);
                 }
-                catch (ConsumeException ex)
+                catch (OperationCanceledException)
+                    when (stoppingToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                catch (Exception ex)
                 {
                     _logger.LogError(
                         ex,
-                        "Kafka consumption error.");
+                        "Error processing OrderCreated event.");
                 }
             }
         }
-        catch (OperationCanceledException)
-        {
-            _logger.LogInformation(
-                "OrderCreatedConsumer is stopping.");
-        }
         finally
         {
-            _consumer.Close();
-            _consumer.Dispose();
-        }
+            consumer.Close();
 
-        await Task.CompletedTask;
+            _logger.LogInformation(
+                "OrderCreatedConsumer stopped.");
+        }
     }
 }

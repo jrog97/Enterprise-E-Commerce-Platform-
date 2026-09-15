@@ -18,6 +18,7 @@ using System.Text;
 using ECommerce.Infrastructure.Repositories;
 using ECommerce.Infrastructure.Messaging;
 using ECommerce.Infrastructure.Messaging.Consumers;
+using ECommerce.Application.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +54,10 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IUnitOfWork,
     UnitOfWork>();
+
+builder.Services.AddScoped<
+    IEventHandler<OrderCreatedEvent>,
+    OrderCreatedEventHandler>();
 
 builder.Services.AddHostedService<OutboxProcessor>();
 
@@ -171,6 +176,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 builder.Services.AddScoped<IPaymentProcessor, MockPaymentProcessor>();
+
+
 
 
 var app = builder.Build();

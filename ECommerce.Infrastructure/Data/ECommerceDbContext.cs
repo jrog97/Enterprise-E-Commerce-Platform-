@@ -2,7 +2,6 @@ using ECommerce.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ECommerce.Application.Exceptions;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Data;
 
