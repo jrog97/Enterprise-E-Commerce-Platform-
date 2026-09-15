@@ -28,13 +28,7 @@ public class OrderCreatedEventHandler
             eventMessage.UserId,
             eventMessage.Total);
 
-        // Business processing will be added here later.
-        //
-        // For example:
-        // - Reserve inventory
-        // - Trigger fulfillment
-        // - Send notification
-        // - Update another bounded context
+        
 
         return Task.CompletedTask;
     }
