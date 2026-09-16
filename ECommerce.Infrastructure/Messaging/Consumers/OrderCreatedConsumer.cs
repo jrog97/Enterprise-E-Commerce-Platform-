@@ -2,7 +2,6 @@ using System.Text.Json;
 using Confluent.Kafka;
 using ECommerce.Application.Events;
 using ECommerce.Application.Interfaces;
-using ECommerce.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,9 +11,13 @@ namespace ECommerce.Infrastructure.Messaging.Consumers;
 
 public class OrderCreatedConsumer : BackgroundService
 {
+    private const int MaxProcessingAttempts = 3;
+
     private readonly IConfiguration _configuration;
     private readonly ILogger<OrderCreatedConsumer> _logger;
     private readonly IServiceScopeFactory _scopeFactory;
+
+    private IConsumer<string, string>? _consumer;
 
     public OrderCreatedConsumer(
         IConfiguration configuration,
@@ -41,11 +44,11 @@ public class OrderCreatedConsumer : BackgroundService
             EnableAutoCommit = false
         };
 
-        using var consumer =
+        _consumer =
             new ConsumerBuilder<string, string>(config)
                 .Build();
 
-        consumer.Subscribe("order-created");
+        _consumer.Subscribe("order-created");
 
         _logger.LogInformation(
             "OrderCreatedConsumer started.");
@@ -57,45 +60,26 @@ public class OrderCreatedConsumer : BackgroundService
                 try
                 {
                     var result =
-                        consumer.Consume(stoppingToken);
+                        _consumer.Consume(stoppingToken);
 
-                    var orderCreatedEvent =
+                    var eventMessage =
                         JsonSerializer.Deserialize<OrderCreatedEvent>(
                             result.Message.Value);
 
-                    if (orderCreatedEvent is null)
+                    if (eventMessage is null)
                     {
                         _logger.LogWarning(
                             "Received invalid OrderCreated event.");
 
-                        consumer.Commit(result);
+                        _consumer.Commit(result);
+
                         continue;
                     }
 
-                    using var scope =
-                        _scopeFactory.CreateScope();
-
-                    var inboxRepository =
-                        scope.ServiceProvider
-                            .GetRequiredService<IInboxRepository>();
-
-                    var inboxEvent =
-                        new InboxEvent(
-                            orderCreatedEvent.EventId,
-                            "OrderCreated");
-
-                    await inboxRepository.AddAsync(
-                        inboxEvent,
+                    await ProcessMessageAsync(
+                        result,
+                        eventMessage,
                         stoppingToken);
-
-                    await inboxRepository.SaveChangesAsync(
-                        stoppingToken);
-
-                    consumer.Commit(result);
-
-                    _logger.LogInformation(
-                        "Processed OrderCreated event for OrderId {OrderId}.",
-                        orderCreatedEvent.OrderId);
                 }
                 catch (OperationCanceledException)
                     when (stoppingToken.IsCancellationRequested)
@@ -106,16 +90,132 @@ public class OrderCreatedConsumer : BackgroundService
                 {
                     _logger.LogError(
                         ex,
-                        "Error processing OrderCreated event.");
+                        "Unexpected error in OrderCreatedConsumer.");
                 }
             }
         }
         finally
         {
-            consumer.Close();
+            _consumer.Close();
 
             _logger.LogInformation(
                 "OrderCreatedConsumer stopped.");
         }
+    }
+
+    private async Task ProcessMessageAsync(
+        ConsumeResult<string, string> result,
+        OrderCreatedEvent eventMessage,
+        CancellationToken cancellationToken)
+    {
+        using var scope =
+            _scopeFactory.CreateScope();
+
+        var inboxService =
+            scope.ServiceProvider
+                .GetRequiredService<IInboxService>();
+
+        for (
+            var attempt = 1;
+            attempt <= MaxProcessingAttempts;
+            attempt++)
+        {
+            try
+            {
+                _logger.LogInformation(
+                    "Processing OrderCreated event. " +
+                    "EventId: {EventId}, OrderId: {OrderId}, " +
+                    "Attempt: {Attempt}/{MaxAttempts}",
+                    eventMessage.EventId,
+                    eventMessage.OrderId,
+                    attempt,
+                    MaxProcessingAttempts);
+
+                var processed =
+                    await inboxService.ProcessAsync(
+                        eventMessage,
+                        cancellationToken);
+
+                if (!processed)
+                {
+                    _logger.LogInformation(
+                        "Duplicate OrderCreated event detected. " +
+                        "EventId: {EventId}",
+                        eventMessage.EventId);
+                }
+
+                _consumer!.Commit(result);
+
+                _logger.LogInformation(
+                    "Kafka offset committed. " +
+                    "EventId: {EventId}, OrderId: {OrderId}",
+                    eventMessage.EventId,
+                    eventMessage.OrderId);
+
+                return;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Failed to process OrderCreated event. " +
+                    "EventId: {EventId}, Attempt: {Attempt}/{MaxAttempts}",
+                    eventMessage.EventId,
+                    attempt,
+                    MaxProcessingAttempts);
+
+                if (attempt == MaxProcessingAttempts)
+                {
+                    await MoveToDeadLetterQueueAsync(
+                        result.Message.Value,
+                        eventMessage.EventId,
+                        "OrderCreated",
+                        ex.Message,
+                        attempt,
+                        cancellationToken);
+
+                    _consumer!.Commit(result);
+
+                    _logger.LogError(
+                        "OrderCreated event moved to DLQ. " +
+                        "EventId: {EventId}, OrderId: {OrderId}",
+                        eventMessage.EventId,
+                        eventMessage.OrderId);
+
+                    return;
+                }
+
+                var delaySeconds =
+                    Math.Pow(2, attempt);
+
+                await Task.Delay(
+                    TimeSpan.FromSeconds(delaySeconds),
+                    cancellationToken);
+            }
+        }
+    }
+
+    private async Task MoveToDeadLetterQueueAsync(
+        string payload,
+        Guid eventId,
+        string eventType,
+        string error,
+        int attempt,
+        CancellationToken cancellationToken)
+    {
+        // DLQ implementation will go here.
+        // For now, log the failed event.
+
+        _logger.LogError(
+            "Dead-lettering event. " +
+            "EventId: {EventId}, EventType: {EventType}, " +
+            "Attempt: {Attempt}, Error: {Error}, Payload: {Payload}",
+            eventId,
+            eventType,
+            attempt,
+            error,
+            payload);
+
+        await Task.CompletedTask;
     }
 }

@@ -59,6 +59,10 @@ builder.Services.AddScoped<
     IEventHandler<OrderCreatedEvent>,
     OrderCreatedEventHandler>();
 
+builder.Services.AddScoped<
+    IInboxService,
+    InboxService>();
+
 builder.Services.AddHostedService<OutboxProcessor>();
 
 builder.Services.AddHostedService<OrderCreatedConsumer>();
