@@ -1,0 +1,17 @@
+**/bin/
+**/obj/
+
+.git/
+.gitignore/
+
+.vscode/
+.idea/
+
+TestResults/
+
+*.user
+*.suo
+
+README.md
+
+docker-compose.override.yml
