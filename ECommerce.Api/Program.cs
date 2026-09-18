@@ -63,6 +63,16 @@ builder.Services.AddScoped<
     IInboxService,
     InboxService>();
 
+builder.Services.AddHealthChecks()
+    .AddNpgSql(
+        builder.Configuration.GetConnectionString(
+            "ECommerceDatabase")!,
+        name: "postgresql")
+    .AddRedis(
+        builder.Configuration.GetConnectionString(
+            "Redis")!,
+        name: "redis");
+
 builder.Services.AddHostedService<OutboxProcessor>();
 
 builder.Services.AddHostedService<OrderCreatedConsumer>();
@@ -220,6 +230,31 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks(
+    "/health",
+    new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+    {
+        ResponseWriter = async (context, report) =>
+        {
+            context.Response.ContentType =
+                "application/json";
+
+            var response = new
+            {
+                status = report.Status.ToString(),
+                checks = report.Entries.Select(entry => new
+                {
+                    name = entry.Key,
+                    status = entry.Value.Status.ToString(),
+                    duration = entry.Value.Duration.TotalMilliseconds
+                })
+            };
+
+            await context.Response.WriteAsJsonAsync(
+                response);
+        }
+    });
 
 app.Run();
 

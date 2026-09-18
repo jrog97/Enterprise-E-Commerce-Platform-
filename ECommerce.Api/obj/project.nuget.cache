@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "51YKJlNA0IY=",
+  "dgSpecHash": "j+g94r3kjNU=",
   "success": true,
   "projectFilePath": "/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.Api/ECommerce.Api.csproj",
   "expectedPackageFiles": [
+    "/Users/jerry/.nuget/packages/aspnetcore.healthchecks.npgsql/9.0.0/aspnetcore.healthchecks.npgsql.9.0.0.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/aspnetcore.healthchecks.redis/9.0.0/aspnetcore.healthchecks.redis.9.0.0.nupkg.sha512",
     "/Users/jerry/.nuget/packages/confluent.kafka/2.15.1/confluent.kafka.2.15.1.nupkg.sha512",
     "/Users/jerry/.nuget/packages/fluentvalidation/12.1.1/fluentvalidation.12.1.1.nupkg.sha512",
     "/Users/jerry/.nuget/packages/fluentvalidation.dependencyinjectionextensions/12.1.1/fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",
