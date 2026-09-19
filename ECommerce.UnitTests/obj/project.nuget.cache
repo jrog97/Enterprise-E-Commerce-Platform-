@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "3SP6IG+ND4c=",
+  "dgSpecHash": "QFYPhVKltIE=",
   "success": true,
   "projectFilePath": "/Users/jerry/Downloads/Enterprise E-Commerce Platform/ECommerce.UnitTests/ECommerce.UnitTests.csproj",
   "expectedPackageFiles": [
@@ -95,6 +95,7 @@
     "/Users/jerry/.nuget/packages/system.io.hashing/10.0.5/system.io.hashing.10.0.5.nupkg.sha512",
     "/Users/jerry/.nuget/packages/testcontainers/4.15.0/testcontainers.4.15.0.nupkg.sha512",
     "/Users/jerry/.nuget/packages/testcontainers.postgresql/4.15.0/testcontainers.postgresql.4.15.0.nupkg.sha512",
+    "/Users/jerry/.nuget/packages/testcontainers.redis/4.15.0/testcontainers.redis.4.15.0.nupkg.sha512",
     "/Users/jerry/.nuget/packages/xunit/2.9.3/xunit.2.9.3.nupkg.sha512",
     "/Users/jerry/.nuget/packages/xunit.abstractions/2.0.3/xunit.abstractions.2.0.3.nupkg.sha512",
     "/Users/jerry/.nuget/packages/xunit.analyzers/1.18.0/xunit.analyzers.1.18.0.nupkg.sha512",

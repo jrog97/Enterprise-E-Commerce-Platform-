@@ -1933,6 +1933,22 @@
           }
         }
       },
+      "Testcontainers.Redis/4.15.0": {
+        "type": "package",
+        "dependencies": {
+          "Testcontainers": "4.15.0"
+        },
+        "compile": {
+          "lib/net10.0/Testcontainers.Redis.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Testcontainers.Redis.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "xunit/2.9.3": {
         "type": "package",
         "dependencies": {
@@ -4869,6 +4885,31 @@
         "testcontainers.postgresql.nuspec"
       ]
     },
+    "Testcontainers.Redis/4.15.0": {
+      "sha512": "au2OSaAQwn3W6Q2QZsYUig2Smbi0xdAZQhyjynjK10Hhf0HokhsADtGjRdXefqjSIpq49Yqpkh7QjhD7hvMwAQ==",
+      "type": "package",
+      "path": "testcontainers.redis/4.15.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README.md",
+        "docs/banner.png",
+        "docs/logo.png",
+        "lib/net10.0/Testcontainers.Redis.dll",
+        "lib/net10.0/Testcontainers.Redis.xml",
+        "lib/net8.0/Testcontainers.Redis.dll",
+        "lib/net8.0/Testcontainers.Redis.xml",
+        "lib/net9.0/Testcontainers.Redis.dll",
+        "lib/net9.0/Testcontainers.Redis.xml",
+        "lib/netstandard2.0/Testcontainers.Redis.dll",
+        "lib/netstandard2.0/Testcontainers.Redis.xml",
+        "lib/netstandard2.1/Testcontainers.Redis.dll",
+        "lib/netstandard2.1/Testcontainers.Redis.xml",
+        "testcontainers.redis.4.15.0.nupkg.sha512",
+        "testcontainers.redis.nuspec"
+      ]
+    },
     "xunit/2.9.3": {
       "sha512": "TlXQBinK35LpOPKHAqbLY4xlEen9TBafjs0V5KnA4wZsoQLQJiirCR4CbIXvOH8NzkW4YeJKP5P/Bnrodm0h9Q==",
       "type": "package",
@@ -5036,9 +5077,11 @@
       "ECommerce.Application >= 1.0.0",
       "ECommerce.Domain >= 1.0.0",
       "Microsoft.AspNetCore.Mvc.Testing >= 10.0.12",
+      "Microsoft.Extensions.Configuration >= 10.0.12",
       "Microsoft.NET.Test.Sdk >= 17.14.1",
       "Moq >= 4.20.72",
       "Testcontainers.PostgreSql >= 4.15.0",
+      "Testcontainers.Redis >= 4.15.0",
       "coverlet.collector >= 6.0.4",
       "xunit >= 2.9.3",
       "xunit.runner.visualstudio >= 3.1.4"
@@ -5103,6 +5146,10 @@
             "target": "Package",
             "version": "[10.0.12, )"
           },
+          "Microsoft.Extensions.Configuration": {
+            "target": "Package",
+            "version": "[10.0.12, )"
+          },
           "Microsoft.NET.Test.Sdk": {
             "target": "Package",
             "version": "[17.14.1, )"
@@ -5112,6 +5159,10 @@
             "version": "[4.20.72, )"
           },
           "Testcontainers.PostgreSql": {
+            "target": "Package",
+            "version": "[4.15.0, )"
+          },
+          "Testcontainers.Redis": {
             "target": "Package",
             "version": "[4.15.0, )"
           },
