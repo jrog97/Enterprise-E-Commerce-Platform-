@@ -21,7 +21,8 @@ RUN dotnet publish \
     "ECommerce.Api.csproj" \
     -c Release \
     -o /app/publish \
-    --no-restore
+    --no-restore \
+    /p:UseAppHost=false
 
 
 # =========================
@@ -30,6 +31,11 @@ RUN dotnet publish \
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 
+RUN apt-get update && apt-get install -y \
+    libgssapi-krb5-2 \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY --from=build /app/publish .
@@ -37,5 +43,7 @@ COPY --from=build /app/publish .
 ENV ASPNETCORE_URLS=http://+:8080
 
 EXPOSE 8080
+
+USER $APP_UID
 
 ENTRYPOINT ["dotnet", "ECommerce.Api.dll"]

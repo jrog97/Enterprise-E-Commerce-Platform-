@@ -1,0 +1,49 @@
+services:
+
+  api:
+    image: ecommerce-api:latest
+    container_name: ecommerce-api-prod
+
+    restart: unless-stopped
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+
+      ConnectionStrings__ECommerceDatabase: ${DATABASE_CONNECTION_STRING}
+
+      ConnectionStrings__Redis: ${REDIS_CONNECTION_STRING}
+
+      Kafka__BootstrapServers: ${KAFKA_BOOTSTRAP_SERVERS}
+
+      Jwt__Issuer: ${JWT_ISSUER}
+
+      Jwt__Audience: ${JWT_AUDIENCE}
+
+      Jwt__Key: ${JWT_KEY}
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+          
