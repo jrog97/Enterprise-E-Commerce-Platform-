@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   docker-build:
@@ -25,7 +26,7 @@ jobs:
         if: github.event_name == 'push'
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ECR_ROLE_ARN }}
+          role-to-assume: arn:aws:iam::430086246852:role/GitHubActionsECRRole
           aws-region: us-east-2
 
       - name: Login to Amazon ECR
