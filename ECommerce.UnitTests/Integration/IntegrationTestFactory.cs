@@ -3,12 +3,10 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Testcontainers.PostgreSql;
-using Testcontainers.Redis;
 
 namespace ECommerce.UnitTests.Integration;
 
@@ -22,26 +20,12 @@ public class IntegrationTestFactory
             .WithPassword("ecommerce_test_password")
             .Build();
 
-    private readonly RedisContainer _redis =
-        new RedisBuilder("redis:7.0")
-            .Build();
 
     private bool _started;
 
     protected override void ConfigureWebHost(
         IWebHostBuilder builder)
     {
-        // Override Redis connection for integration tests
-        builder.ConfigureAppConfiguration(
-            (_, configuration) =>
-            {
-                configuration.AddInMemoryCollection(
-                    new Dictionary<string, string?>
-                    {
-                        ["ConnectionStrings:Redis"] =
-                            _redis.GetConnectionString()
-                    });
-            });
 
         // Override PostgreSQL connection for integration tests
         builder.ConfigureServices(services =>
@@ -66,8 +50,6 @@ public class IntegrationTestFactory
         }
 
         await _postgres.StartAsync();
-        await _redis.StartAsync();
-
         // Starting Services starts the ASP.NET application.
         // Program.cs will apply migrations and seed Identity.
         _ = Services;
@@ -90,7 +72,6 @@ public class IntegrationTestFactory
 
     public override async ValueTask DisposeAsync()
     {
-        await _redis.DisposeAsync();
         await _postgres.DisposeAsync();
 
         await base.DisposeAsync();
