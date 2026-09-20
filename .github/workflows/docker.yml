@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
   pull_request:
     branches:
       - main
@@ -22,6 +23,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Debug GitHub context
+        shell: bash
         run: |
           echo "Repository: $GITHUB_REPOSITORY"
           echo "Ref: $GITHUB_REF"
@@ -39,7 +41,7 @@ jobs:
             echo "OIDC request token: MISSING"
           fi
 
-            - name: Inspect OIDC claims
+      - name: Inspect OIDC claims
         shell: bash
         run: |
           RESPONSE=$(curl -sS \
@@ -57,7 +59,6 @@ jobs:
 
           PAYLOAD=$(echo "$TOKEN" | cut -d '.' -f2)
 
-          # Add base64 padding if necessary
           case $((${#PAYLOAD} % 4)) in
             2) PAYLOAD="${PAYLOAD}==" ;;
             3) PAYLOAD="${PAYLOAD}=" ;;
