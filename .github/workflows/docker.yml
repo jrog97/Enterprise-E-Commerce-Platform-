@@ -53,50 +53,29 @@ jobs:
             echo "$RESPONSE"
             exit 1
           fi
+          
           - name: Inspect OIDC claims
-        shell: bash
-        run: |
-          RESPONSE=$(curl -sS \
-            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
+          shell: bash
+          run: |
+            RESPONSE=$(curl -sS \
+              -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+              "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
 
-          TOKEN=$(echo "$RESPONSE" | jq -r '.value')
+            TOKEN=$(echo "$RESPONSE" | jq -r '.value')
 
-          if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
-            echo "Failed to obtain OIDC token"
-            exit 1
-          fi
+            echo "Token received: $([ "$TOKEN" != "null" ] && [ -n "$TOKEN" ] && echo YES || echo NO)"
 
-          PAYLOAD=$(echo "$TOKEN" | cut -d '.' -f2)
+            echo "JWT header:"
+            echo "$TOKEN" | cut -d '.' -f1 | base64 -d 2>/dev/null | jq .
 
-          python3 - "$PAYLOAD" <<'PY'
-          import sys
-          import base64
-          import json
-
-          payload = sys.argv[1]
-          payload += "=" * (-len(payload) % 4)
-
-          claims = json.loads(
-              base64.urlsafe_b64decode(payload).decode("utf-8")
-          )
-
-          print("OIDC issuer:")
-          print(claims.get("iss"))
-
-          print("OIDC audience:")
-          print(claims.get("aud"))
-
-          print("OIDC subject:")
-          print(claims.get("sub"))
-
-          print("OIDC repository:")
-          print(claims.get("repository"))
-
-          print("OIDC ref:")
-          print(claims.get("ref"))
-          PY
-
+            echo "JWT payload:"
+            echo "$TOKEN" | cut -d '.' -f2 | base64 -d 2>/dev/null | jq '{
+              iss,
+              aud,
+              sub,
+              repository,
+              ref
+            }'
       - name: Configure AWS credentials
         if: github.event_name == 'push'
         uses: aws-actions/configure-aws-credentials@v4
