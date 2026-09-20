@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
   pull_request:
     branches:
       - main
@@ -39,43 +38,32 @@ jobs:
           else
             echo "OIDC request token: MISSING"
           fi
-      - name: Test OIDC token
+
+      - name: Inspect OIDC claims
         shell: bash
         run: |
           RESPONSE=$(curl -sS \
             -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
             "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
 
-          if echo "$RESPONSE" | grep -q '"value"'; then
-            echo "OIDC token successfully received from GitHub"
-          else
+          TOKEN=$(echo "$RESPONSE" | jq -r '.value')
+
+          if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
             echo "Failed to obtain OIDC token"
-            echo "$RESPONSE"
             exit 1
           fi
-          
-          - name: Inspect OIDC claims
-          shell: bash
-          run: |
-            RESPONSE=$(curl -sS \
-              -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-              "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
 
-            TOKEN=$(echo "$RESPONSE" | jq -r '.value')
+          echo "OIDC token successfully received from GitHub"
 
-            echo "Token received: $([ "$TOKEN" != "null" ] && [ -n "$TOKEN" ] && echo YES || echo NO)"
+          echo "JWT payload:"
+          echo "$TOKEN" | cut -d '.' -f2 | base64 -d 2>/dev/null | jq '{
+            iss,
+            aud,
+            sub,
+            repository,
+            ref
+          }'
 
-            echo "JWT header:"
-            echo "$TOKEN" | cut -d '.' -f1 | base64 -d 2>/dev/null | jq .
-
-            echo "JWT payload:"
-            echo "$TOKEN" | cut -d '.' -f2 | base64 -d 2>/dev/null | jq '{
-              iss,
-              aud,
-              sub,
-              repository,
-              ref
-            }'
       - name: Configure AWS credentials
         if: github.event_name == 'push'
         uses: aws-actions/configure-aws-credentials@v4
