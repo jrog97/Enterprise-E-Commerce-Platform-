@@ -39,7 +39,7 @@ jobs:
             echo "OIDC request token: MISSING"
           fi
 
-      - name: Inspect OIDC claims
+            - name: Inspect OIDC claims
         shell: bash
         run: |
           RESPONSE=$(curl -sS \
@@ -55,14 +55,26 @@ jobs:
 
           echo "OIDC token successfully received from GitHub"
 
+          PAYLOAD=$(echo "$TOKEN" | cut -d '.' -f2)
+
+          # Add base64 padding if necessary
+          case $((${#PAYLOAD} % 4)) in
+            2) PAYLOAD="${PAYLOAD}==" ;;
+            3) PAYLOAD="${PAYLOAD}=" ;;
+          esac
+
           echo "JWT payload:"
-          echo "$TOKEN" | cut -d '.' -f2 | base64 -d 2>/dev/null | jq '{
+          echo "$PAYLOAD" | base64 -d 2>/dev/null | jq '{
             iss,
             aud,
             sub,
             repository,
             ref
           }'
+
+          echo ""
+          echo "RAW SUBJECT:"
+          echo "$PAYLOAD" | base64 -d 2>/dev/null | jq -r '.sub'
 
       - name: Configure AWS credentials
         if: github.event_name == 'push'
