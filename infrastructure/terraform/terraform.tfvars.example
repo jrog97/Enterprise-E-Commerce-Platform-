@@ -1,0 +1,4 @@
+aws_region  = "us-east-2"
+project_name = "enterprise-ecommerce"
+environment = "production"
+vpc_cidr    = "172.31.0.0/16"

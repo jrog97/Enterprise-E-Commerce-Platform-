@@ -29,3 +29,12 @@ Thumbs.db
 
 # Test results
 TestResults/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+!terraform.tfvars.example
+.terraform.lock.hcl
