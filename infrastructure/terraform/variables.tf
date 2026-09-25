@@ -21,3 +21,15 @@ variable "vpc_cidr" {
   type        = string
   default     = "172.31.0.0/16"
 }
+
+variable "database_username" {
+  description = "PostgreSQL master username."
+  type        = string
+  sensitive   = true
+}
+
+variable "database_password" {
+  description = "PostgreSQL master password."
+  type        = string
+  sensitive   = true
+}

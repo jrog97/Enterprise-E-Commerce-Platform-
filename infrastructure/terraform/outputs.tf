@@ -53,3 +53,18 @@ output "kafka_security_group_id" {
   description = "Security group ID for Kafka."
   value       = aws_security_group.kafka.id
 }
+
+output "rds_endpoint" {
+  description = "RDS PostgreSQL endpoint."
+  value       = aws_db_instance.postgres.address
+}
+
+output "rds_port" {
+  description = "RDS PostgreSQL port."
+  value       = aws_db_instance.postgres.port
+}
+
+output "rds_database_name" {
+  description = "RDS PostgreSQL database name."
+  value       = aws_db_instance.postgres.db_name
+}
