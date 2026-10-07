@@ -1,0 +1,59 @@
+#resource "aws_msk_cluster" "kafka" {
+#  cluster_name           = "${var.project_name}-kafka"
+ # kafka_version          = "3.9.x"
+  #number_of_broker_nodes = 2
+
+  #broker_node_group_info {
+   # instance_type = "kafka.t3.small"
+
+   # client_subnets = [
+      aws_subnet.database["us-east-2a"].id,
+   #   aws_subnet.database["us-east-2b"].id
+   # ]
+
+   # security_groups = [
+   #   aws_security_group.kafka.id
+   # ]
+
+    storage_info {
+   #   ebs_storage_info {
+   #     volume_size = 20
+   #   }
+   # }
+  #}
+
+  #client_authentication {
+  #  unauthenticated = true
+  #}
+
+  #encryption_info {
+  #  encryption_at_rest_kms_key_arn = data.aws_kms_key.kafka.arn
+
+  #  encryption_in_transit {
+  #    client_broker = "TLS"
+  #    in_cluster    = true
+  #  }
+  #}
+
+  #enhanced_monitoring = "PER_BROKER"
+
+  #logging_info {
+   # broker_logs {
+     # cloudwatch_logs {
+     #   enabled = false
+     # }
+
+     # firehose {
+     #   enabled = false
+     # }
+
+     # s3 {
+     #   enabled = false
+     # }
+    #}
+  #}
+
+  #tags = {
+  #  Name = "${var.project_name}-kafka"
+  #}
+#}

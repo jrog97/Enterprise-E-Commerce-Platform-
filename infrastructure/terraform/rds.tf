@@ -14,9 +14,9 @@ resource "aws_db_instance" "postgres" {
   identifier = "${var.project_name}-postgres"
 
   engine         = "postgres"
-  engine_version = "17"
+  engine_version = "17.11"
 
-  instance_class = "db.t4g.micro"
+  instance_class = "db.t3.micro"
 
   allocated_storage     = 20
   max_allocated_storage = 100
@@ -34,8 +34,8 @@ resource "aws_db_instance" "postgres" {
 
   publicly_accessible = false
 
-  backup_retention_period = 7
-  backup_window           = "03:00-04:00"
+  backup_retention_period = 0
+
 
   maintenance_window = "sun:04:00-sun:05:00"
 
@@ -47,11 +47,11 @@ resource "aws_db_instance" "postgres" {
 
   final_snapshot_identifier = "${var.project_name}-final-snapshot"
 
-  multi_az = true
+  multi_az = false
 
-  monitoring_interval = 60
+  monitoring_interval = 0
 
-  performance_insights_enabled = true
+  performance_insights_enabled = false
 
   copy_tags_to_snapshot = true
 

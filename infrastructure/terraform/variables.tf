@@ -33,3 +33,31 @@ variable "database_password" {
   type        = string
   sensitive   = true
 }
+
+variable "redis_auth_token" {
+  description = "Authentication token for ElastiCache Valkey."
+  type        = string
+  sensitive   = true
+}
+
+data "aws_kms_key" "kafka" {
+  key_id = "alias/aws/kafka"
+}
+
+variable "jwt_issuer" {
+  description = "JWT issuer."
+  type        = string
+  sensitive   = true
+}
+
+variable "jwt_audience" {
+  description = "JWT audience."
+  type        = string
+  sensitive   = true
+}
+
+variable "jwt_key" {
+  description = "JWT signing key."
+  type        = string
+  sensitive   = true
+}

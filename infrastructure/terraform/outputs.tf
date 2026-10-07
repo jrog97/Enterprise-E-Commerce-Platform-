@@ -68,3 +68,88 @@ output "rds_database_name" {
   description = "RDS PostgreSQL database name."
   value       = aws_db_instance.postgres.db_name
 }
+
+output "redis_primary_endpoint" {
+  description = "Primary endpoint for the ElastiCache Valkey replication group."
+  value       = aws_elasticache_replication_group.redis.primary_endpoint_address
+}
+
+output "redis_reader_endpoint" {
+  description = "Reader endpoint for the ElastiCache Valkey replication group."
+  value       = aws_elasticache_replication_group.redis.reader_endpoint_address
+}
+
+output "redis_port" {
+  description = "Port used by ElastiCache Valkey."
+  value       = aws_elasticache_replication_group.redis.port
+}
+
+output "database_secret_arn" {
+  description = "ARN of the database secret."
+  value       = aws_secretsmanager_secret.database.arn
+}
+
+output "redis_secret_arn" {
+  description = "ARN of the Redis/Valkey secret."
+  value       = aws_secretsmanager_secret.redis.arn
+}
+
+output "jwt_secret_arn" {
+  description = "ARN of the JWT secret."
+  value       = aws_secretsmanager_secret.jwt.arn
+}
+
+output "ecs_execution_role_arn" {
+  description = "ARN of the ECS task execution role."
+  value       = aws_iam_role.ecs_execution.arn
+}
+
+output "ecs_task_role_arn" {
+  description = "ARN of the ECS application task role."
+  value       = aws_iam_role.ecs_task.arn
+}
+
+output "github_actions_ecr_role_arn" {
+  description = "ARN of the GitHub Actions ECR role."
+  value       = aws_iam_role.github_actions_ecr.arn
+}
+
+output "ecs_cluster_id" {
+  description = "ECS cluster ID."
+  value       = aws_ecs_cluster.main.id
+}
+
+output "ecs_cluster_name" {
+  description = "ECS cluster name."
+  value       = aws_ecs_cluster.main.name
+}
+
+output "ecs_service_name" {
+  description = "ECS service name."
+  value       = aws_ecs_service.api.name
+}
+
+output "ecs_task_definition_arn" {
+  description = "ECS task definition ARN."
+  value       = aws_ecs_task_definition.api.arn
+}
+
+output "ecs_log_group_name" {
+  description = "CloudWatch log group used by ECS."
+  value       = aws_cloudwatch_log_group.ecs.name
+}
+
+output "alb_dns_name" {
+  description = "DNS name of the application load balancer."
+  value       = aws_lb.api.dns_name
+}
+
+output "alb_arn" {
+  description = "ARN of the application load balancer."
+  value       = aws_lb.api.arn
+}
+
+output "alb_target_group_arn" {
+  description = "ARN of the ECS API target group."
+  value       = aws_lb_target_group.api.arn
+}
